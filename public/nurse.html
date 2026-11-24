@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Nurse Dosage Entry</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        header {
+            background: #1565c0;
+            color: white;
+            padding: 28px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+            font-size: 32px;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1000px;
+            margin: 30px auto;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #222;
+        }
+
+        h3 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        button {
+            border: none;
+            padding: 13px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 15px;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .medicine-btn {
+            background: #1976d2;
+            color: white;
+        }
+
+        .insulin-btn {
+            background: #e65100;
+            color: white;
+        }
+
+        .both-btn {
+            background: #6a1b9a;
+            color: white;
+        }
+
+        .add-btn {
+            background: #0288d1;
+            color: white;
+        }
+
+        .save-btn {
+            background: #2e7d32;
+            color: white;
+            width: 100%;
+            padding: 16px;
+            font-size: 17px;
+        }
+
+        .delete-btn {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .logout-btn {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .patient-id {
+            color: #1565c0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .medicine-card {
+            border-left: 5px solid #1976d2;
+            background: #f8fbff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        .insulin-card {
+            border-left: 5px solid #e65100;
+            background: #fff8f3;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        .record {
+            background: #f8fbff;
+            border-left: 5px solid #1976d2;
+            padding: 18px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+        }
+
+        .record.insulin {
+            border-left-color: #e65100;
+            background: #fff8f3;
+        }
+
+        .status {
+            padding: 16px;
+            margin-top: 15px;
+            border-radius: 8px;
+            line-height: 1.5;
+            background: #eef5ff;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .warning {
+            background: #fff8e1;
+            color: #8d6e00;
+        }
+
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .navigation {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .navigation a {
+            color: #1565c0;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 20px;
+            line-height: 2;
+        }
+
+        .required {
+            color: red;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <h1>👩‍⚕️ Nurse Dosage Entry</h1>
+
+    <p>
+        Medication & Insulin Tracking System
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+    <!-- =================================================
+         PATIENT INFORMATION
+    ================================================== -->
+
+    <div class="box">
+
+        <h2>👤 Patient Information</h2>
+
+        <p>
+
+            Patient ID:
+
+            <span
+                id="patientId"
+                class="patient-id">
+            </span>
+
+        </p>
+
+        <div class="info">
+
+            Patient ID is automatically taken from
+            the logged-in patient account.
+
+            You do not need to enter it again.
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         NURSE INFORMATION
+    ================================================== -->
+
+    <div class="box">
+
+        <h2>👩‍⚕️ Nurse Information</h2>
+
+        <label>
+
+            Nurse Name
+
+            <span class="required">*</span>
+
+        </label>
+
+        <input
+            type="text"
+            id="nurseName"
+            placeholder="Enter nurse name">
+
+    </div>
+
+
+    <!-- =================================================
+         TREATMENT SELECTION
+    ================================================== -->
+
+    <div class="box">
+
+        <h2>Choose Treatment</h2>
+
+        <button
+            type="button"
+            class="medicine-btn"
+            id="medicineButton">
+
+            💊 Medicine Only
+
+        </button>
+
+
+        <button
+            type="button"
+            class="insulin-btn"
+            id="insulinButton">
+
+            💉 Insulin Only
+
+        </button>
+
+
+        <button
+            type="button"
+            class="both-btn"
+            id="bothButton">
+
+            💊💉 Both
+
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         MEDICINE SECTION
+    ================================================== -->
+
+    <div
+        id="medicineSection"
+        class="box hidden">
+
+        <h2>💊 Medicine Details</h2>
+
+        <div
+            id="medicineContainer">
+        </div>
+
+
+        <button
+            type="button"
+            class="add-btn"
+            id="addMedicineButton">
+
+            + Add Another Medicine
+
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         INSULIN SECTION
+    ================================================== -->
+
+    <div
+        id="insulinSection"
+        class="box hidden">
+
+        <h2>💉 Insulin Details</h2>
+
+        <div class="insulin-card">
+
+            <label>
+
+                Insulin Type
+
+                <span class="required">*</span>
+
+            </label>
+
+            <input
+                type="text"
+                id="insulinType"
+                placeholder="Example: Regular Insulin">
+
+
+            <label>
+
+                Prescribed Insulin Dose
+
+                <span class="required">*</span>
+
+            </label>
+
+            <input
+                type="text"
+                id="insulinDose"
+                placeholder="Example: 10 units">
+
+
+            <label>
+
+                Administration Time
+
+                <span class="required">*</span>
+
+            </label>
+
+            <input
+                type="time"
+                id="insulinTime">
+
+
+            <label>
+
+                Blood Glucose Reading
+
+            </label>
+
+            <input
+                type="number"
+                id="glucoseReading"
+                placeholder="Example: 120">
+
+
+            <label>
+
+                Glucose Unit
+
+            </label>
+
+            <select id="glucoseUnit">
+
+                <option value="mg/dL">
+                    mg/dL
+                </option>
+
+                <option value="mmol/L">
+                    mmol/L
+                </option>
+
+            </select>
+
+
+            <label>
+
+                Injection Site
+
+            </label>
+
+            <select id="injectionSite">
+
+                <option value="">
+                    Select injection site
+                </option>
+
+                <option value="Abdomen">
+                    Abdomen
+                </option>
+
+                <option value="Thigh">
+                    Thigh
+                </option>
+
+                <option value="Upper Arm">
+                    Upper Arm
+                </option>
+
+                <option value="Buttocks">
+                    Buttocks
+                </option>
+
+            </select>
+
+
+            <label>
+
+                Insulin Instructions / Notes
+
+            </label>
+
+            <textarea
+                id="insulinInstructions"
+                placeholder="Enter instructions or notes">
+            </textarea>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         SAVE DOSAGE
+    ================================================== -->
+
+    <div class="box">
+
+        <h2>💾 Save Dosage</h2>
+
+        <p>
+
+            Saving the dosage will automatically schedule
+            the medication or insulin reminder.
+
+        </p>
+
+
+        <button
+            type="button"
+            id="saveButton"
+            class="save-btn">
+
+            💾 Save Dosage & Schedule Notification
+
+        </button>
+
+
+        <div
+            id="status"
+            class="status">
+
+            Ready.
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         RECENT RECORDS
+    ================================================== -->
+
+    <div class="box">
+
+        <h2>📋 Recent Dosage Records</h2>
+
+        <div
+            id="recordsContainer">
+
+            Loading records...
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         NAVIGATION
+    ================================================== -->
+
+    <div class="navigation">
+
+        <a href="./profile.html">
+            👤 Profile
+        </a>
+
+        <a href="./reminder.html">
+            🔔 Reminders
+        </a>
+
+        <a href="./appointment.html">
+            📅 Appointments
+        </a>
+
+        <a href="./reporting.html">
+            📊 Reports
+        </a>
+
+    </div>
+
+
+    <button
+        type="button"
+        class="logout-btn"
+        id="logoutButton">
+
+        Logout
+
+    </button>
+
+
+</div>
+
+
+
+<script>
+
+
+// =====================================================
+// NODE SERVER
+// =====================================================
+//
+// This is hidden from the nurse interface.
+// It is still required for notifications.
+//
+// Live Server:
+// http://127.0.0.1:5500
+//
+// Node:
+// http://127.0.0.1:3000
+//
+
+const API_SERVER =
+    window.location.protocol +
+    "//" +
+    window.location.hostname +
+    ":3000";
+
+
+// =====================================================
+// PATIENT ID
+// =====================================================
+
+const patientId =
+    localStorage.getItem(
+        "loggedInPatientId"
+    );
+
+
+if (!patientId) {
+
+    alert(
+        "Please login first."
+    );
+
+    window.location.href =
+        "./index.html";
+
+}
+
+
+document.getElementById(
+    "patientId"
+).textContent =
+    patientId;
+
+
+// =====================================================
+// VARIABLES
+// =====================================================
+
+let selectedTreatment = "";
+
+let medicineCount = 0;
+
+
+// =====================================================
+// STATUS
+// =====================================================
+
+function setStatus(
+    message,
+    type = ""
+) {
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+
+    status.textContent =
+        message;
+
+
+    status.className =
+        "status";
+
+
+    if (type) {
+
+        status.classList.add(
+            type
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// SERVICE WORKER
+// =====================================================
+
+async function registerServiceWorker() {
+
+    if (
+        !("serviceWorker" in navigator)
+    ) {
+
+        throw new Error(
+            "Service Worker is not supported by this browser."
+        );
+
+    }
+
+
+    const registration =
+        await navigator.serviceWorker.register(
+            "./sw.js"
+        );
+
+
+    await navigator.serviceWorker.ready;
+
+
+    return registration;
+
+}
+
+
+// =====================================================
+// CONVERT VAPID KEY
+// =====================================================
+
+function urlBase64ToUint8Array(
+    base64String
+) {
+
+    const padding =
+        "=".repeat(
+            (4 -
+                base64String.length % 4) % 4
+        );
+
+
+    const base64 =
+        (
+            base64String +
+            padding
+        )
+            .replace(
+                /-/g,
+                "+"
+            )
+            .replace(
+                /_/g,
+                "/"
+            );
+
+
+    const rawData =
+        window.atob(
+            base64
+        );
+
+
+    const outputArray =
+        new Uint8Array(
+            rawData.length
+        );
+
+
+    for (
+        let i = 0;
+        i < rawData.length;
+        i++
+    ) {
+
+        outputArray[i] =
+            rawData.charCodeAt(i);
+
+    }
+
+
+    return outputArray;
+
+}
+
+
+// =====================================================
+// GET VAPID PUBLIC KEY
+// =====================================================
+
+async function getVapidPublicKey() {
+
+    const response =
+        await fetch(
+            API_SERVER +
+            "/api/public-key",
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Notification server is unavailable."
+        );
+
+    }
+
+
+    const data =
+        await response.json();
+
+
+    if (
+        !data.success ||
+        !data.publicKey
+    ) {
+
+        throw new Error(
+            "Could not get notification key."
+        );
+
+    }
+
+
+    return data.publicKey;
+
+}
+
+
+// =====================================================
+// ENABLE PUSH SUBSCRIPTION
+// =====================================================
+
+async function setupPushNotifications() {
+
+    if (
+        !("Notification" in window)
+    ) {
+
+        throw new Error(
+            "Notifications are not supported by this browser."
+        );
+
+    }
+
+
+    let permission =
+        Notification.permission;
+
+
+    if (
+        permission !== "granted"
+    ) {
+
+        permission =
+            await Notification.requestPermission();
+
+    }
+
+
+    if (
+        permission !== "granted"
+    ) {
+
+        throw new Error(
+            "Notification permission was not granted."
+        );
+
+    }
+
+
+    const registration =
+        await registerServiceWorker();
+
+
+    const publicKey =
+        await getVapidPublicKey();
+
+
+    let subscription =
+        await registration
+            .pushManager
+            .getSubscription();
+
+
+    if (!subscription) {
+
+        subscription =
+            await registration
+                .pushManager
+                .subscribe({
+
+                    userVisibleOnly:
+                        true,
+
+                    applicationServerKey:
+                        urlBase64ToUint8Array(
+                            publicKey
+                        )
+
+                });
+
+    }
+
+
+    const response =
+        await fetch(
+            API_SERVER +
+            "/api/subscribe",
+            {
+
+                method:
+                    "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body:
+                    JSON.stringify({
+
+                        patientId:
+                            patientId,
+
+                        subscription:
+                            subscription
+
+                    })
+
+            }
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Could not register notification subscription."
+        );
+
+    }
+
+
+    const data =
+        await response.json();
+
+
+    if (!data.success) {
+
+        throw new Error(
+            data.message ||
+            "Could not register notification."
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// MEDICINE ONLY
+// =====================================================
+
+function showMedicine() {
+
+    selectedTreatment =
+        "Medicine";
+
+
+    document.getElementById(
+        "medicineSection"
+    ).classList.remove(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "insulinSection"
+    ).classList.add(
+        "hidden"
+    );
+
+
+    if (
+        document.getElementById(
+            "medicineContainer"
+        ).children.length === 0
+    ) {
+
+        addMedicine();
+
+    }
+
+}
+
+
+// =====================================================
+// INSULIN ONLY
+// =====================================================
+
+function showInsulin() {
+
+    selectedTreatment =
+        "Insulin";
+
+
+    document.getElementById(
+        "medicineSection"
+    ).classList.add(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "insulinSection"
+    ).classList.remove(
+        "hidden"
+    );
+
+}
+
+
+// =====================================================
+// BOTH
+// =====================================================
+
+function showBoth() {
+
+    selectedTreatment =
+        "Both";
+
+
+    document.getElementById(
+        "medicineSection"
+    ).classList.remove(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "insulinSection"
+    ).classList.remove(
+        "hidden"
+    );
+
+
+    if (
+        document.getElementById(
+            "medicineContainer"
+        ).children.length === 0
+    ) {
+
+        addMedicine();
+
+    }
+
+}
+
+
+// =====================================================
+// ADD MEDICINE
+// =====================================================
+
+function addMedicine() {
+
+    medicineCount++;
+
+
+    const container =
+        document.getElementById(
+            "medicineContainer"
+        );
+
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        "medicine-card";
+
+
+    card.innerHTML = `
+
+        <h3>
+            💊 Medicine ${medicineCount}
+        </h3>
+
+
+        <label>
+            Medicine Name
+            <span class="required">*</span>
+        </label>
+
+        <input
+            type="text"
+            class="medicineName"
+            placeholder="Example: Aspirin">
+
+
+        <label>
+            Medicine Type
+        </label>
+
+        <select class="medicineType">
+
+            <option value="">
+                Select medicine type
+            </option>
+
+            <option value="Tablet">
+                Tablet
+            </option>
+
+            <option value="Capsule">
+                Capsule
+            </option>
+
+            <option value="Syrup">
+                Syrup
+            </option>
+
+            <option value="Injection">
+                Injection
+            </option>
+
+            <option value="Other">
+                Other
+            </option>
+
+        </select>
+
+
+        <label>
+            Dose / Quantity
+            <span class="required">*</span>
+        </label>
+
+        <input
+            type="text"
+            class="medicineDose"
+            placeholder="Example: 500 mg">
+
+
+        <label>
+            Medication Time
+            <span class="required">*</span>
+        </label>
+
+        <input
+            type="time"
+            class="medicineTime">
+
+
+        <label>
+            Frequency
+            <span class="required">*</span>
+        </label>
+
+        <select class="medicineFrequency">
+
+            <option value="">
+                Select frequency
+            </option>
+
+            <option value="Once daily">
+                Once daily
+            </option>
+
+            <option value="Twice daily">
+                Twice daily
+            </option>
+
+            <option value="Three times daily">
+                Three times daily
+            </option>
+
+            <option value="Four times daily">
+                Four times daily
+            </option>
+
+            <option value="As prescribed">
+                As prescribed
+            </option>
+
+        </select>
+
+
+        <label>
+            Food Relation
+        </label>
+
+        <select class="foodRelation">
+
+            <option value="Not specified">
+                Not specified
+            </option>
+
+            <option value="Before food">
+                Before food
+            </option>
+
+            <option value="After food">
+                After food
+            </option>
+
+            <option value="With food">
+                With food
+            </option>
+
+            <option value="Any time">
+                Any time
+            </option>
+
+        </select>
+
+
+        <label>
+            Medication Instructions
+        </label>
+
+        <textarea
+            class="medicineInstructions"
+            placeholder="Enter medication instructions">
+        </textarea>
+
+
+        <button
+            type="button"
+            class="delete-btn">
+
+            🗑 Remove Medicine
+
+        </button>
+
+    `;
+
+
+    card
+        .querySelector(
+            ".delete-btn"
+        )
+        .addEventListener(
+            "click",
+            function() {
+
+                card.remove();
+
+            }
+        );
+
+
+    container.appendChild(
+        card
+    );
+
+}
+
+
+// =====================================================
+// SAVE DOSAGE
+// =====================================================
+
+async function saveDosage() {
+
+    const saveButton =
+        document.getElementById(
+            "saveButton"
+        );
+
+
+    const nurseName =
+        document.getElementById(
+            "nurseName"
+        ).value.trim();
+
+
+    if (!nurseName) {
+
+        setStatus(
+            "❌ Please enter nurse name.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!selectedTreatment) {
+
+        setStatus(
+            "❌ Please select Medicine, Insulin, or Both.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    saveButton.disabled =
+        true;
+
+
+    saveButton.textContent =
+        "⏳ Saving...";
+
+
+    try {
+
+        // ---------------------------------------------
+        // CONNECT TO NOTIFICATION SYSTEM
+        // ---------------------------------------------
+
+        setStatus(
+            "⏳ Preparing notification..."
+        );
+
+
+        await setupPushNotifications();
+
+
+        const records = [];
+
+
+        // ---------------------------------------------
+        // MEDICINES
+        // ---------------------------------------------
+
+        if (
+            selectedTreatment === "Medicine" ||
+            selectedTreatment === "Both"
+        ) {
+
+            const cards =
+                document.querySelectorAll(
+                    ".medicine-card"
+                );
+
+
+            if (
+                cards.length === 0
+            ) {
+
+                throw new Error(
+                    "Please add at least one medicine."
+                );
+
+            }
+
+
+            for (
+                const card of cards
+            ) {
+
+                const name =
+                    card.querySelector(
+                        ".medicineName"
+                    ).value.trim();
+
+
+                const medicineType =
+                    card.querySelector(
+                        ".medicineType"
+                    ).value;
+
+
+                const dose =
+                    card.querySelector(
+                        ".medicineDose"
+                    ).value.trim();
+
+
+                const time =
+                    card.querySelector(
+                        ".medicineTime"
+                    ).value;
+
+
+                const frequency =
+                    card.querySelector(
+                        ".medicineFrequency"
+                    ).value;
+
+
+                const foodRelation =
+                    card.querySelector(
+                        ".foodRelation"
+                    ).value;
+
+
+                const instructions =
+                    card.querySelector(
+                        ".medicineInstructions"
+                    ).value.trim();
+
+
+                if (
+                    !name ||
+                    !dose ||
+                    !time ||
+                    !frequency
+                ) {
+
+                    throw new Error(
+                        "Please complete all required medicine fields."
+                    );
+
+                }
+
+
+                records.push({
+
+                    patientId:
+                        patientId,
+
+                    type:
+                        "Medicine",
+
+                    name:
+                        name,
+
+                    medicineName:
+                        name,
+
+                    medicineType:
+                        medicineType,
+
+                    dose:
+                        dose,
+
+                    time:
+                        time,
+
+                    medicationTime:
+                        time,
+
+                    frequency:
+                        frequency,
+
+                    foodRelation:
+                        foodRelation,
+
+                    instructions:
+                        instructions,
+
+                    nurseName:
+                        nurseName,
+
+                    createdAt:
+                        new Date()
+                            .toISOString()
+
+                });
+
+            }
+
+        }
+
+
+        // ---------------------------------------------
+        // INSULIN
+        // ---------------------------------------------
+
+        if (
+            selectedTreatment === "Insulin" ||
+            selectedTreatment === "Both"
+        ) {
+
+            const insulinType =
+                document.getElementById(
+                    "insulinType"
+                ).value.trim();
+
+
+            const insulinDose =
+                document.getElementById(
+                    "insulinDose"
+                ).value.trim();
+
+
+            const insulinTime =
+                document.getElementById(
+                    "insulinTime"
+                ).value;
+
+
+            const glucoseReading =
+                document.getElementById(
+                    "glucoseReading"
+                ).value;
+
+
+            const glucoseUnit =
+                document.getElementById(
+                    "glucoseUnit"
+                ).value;
+
+
+            const injectionSite =
+                document.getElementById(
+                    "injectionSite"
+                ).value;
+
+
+            const instructions =
+                document.getElementById(
+                    "insulinInstructions"
+                ).value.trim();
+
+
+            if (
+                !insulinType ||
+                !insulinDose ||
+                !insulinTime
+            ) {
+
+                throw new Error(
+                    "Please enter insulin type, dose, and administration time."
+                );
+
+            }
+
+
+            records.push({
+
+                patientId:
+                    patientId,
+
+                type:
+                    "Insulin",
+
+                name:
+                    insulinType,
+
+                insulinType:
+                    insulinType,
+
+                dose:
+                    insulinDose,
+
+                prescribedDose:
+                    insulinDose,
+
+                time:
+                    insulinTime,
+
+                administrationTime:
+                    insulinTime,
+
+                glucoseReading:
+                    glucoseReading,
+
+                glucoseUnit:
+                    glucoseUnit,
+
+                injectionSite:
+                    injectionSite,
+
+                instructions:
+                    instructions,
+
+                nurseName:
+                    nurseName,
+
+                createdAt:
+                    new Date()
+                        .toISOString()
+
+            });
+
+        }
+
+
+        // ---------------------------------------------
+        // SEND TO NODE SERVER
+        // ---------------------------------------------
+
+        let successful =
+            0;
+
+        let failed =
+            0;
+
+
+        for (
+            const record of records
+        ) {
+
+            setStatus(
+                `⏳ Scheduling ${record.name}...`
+            );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_SERVER +
+                        "/api/schedule",
+                        {
+
+                            method:
+                                "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    patientId:
+                                        patientId,
+
+                                    type:
+                                        record.type,
+
+                                    name:
+                                        record.name,
+
+                                    dose:
+                                        record.dose,
+
+                                    time:
+                                        record.time
+
+                                })
+
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    failed++;
+
+                    continue;
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    data.success
+                ) {
+
+                    successful++;
+
+                }
+
+                else {
+
+                    failed++;
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    error
+                );
+
+                failed++;
+
+            }
+
+        }
+
+
+        // ---------------------------------------------
+        // SAVE LOCALLY
+        // ---------------------------------------------
+
+        let allRecords =
+            JSON.parse(
+                localStorage.getItem(
+                    "dosageRecords"
+                ) || "[]"
+            );
+
+
+        allRecords.push(
+            ...records
+        );
+
+
+        localStorage.setItem(
+            "dosageRecords",
+            JSON.stringify(
+                allRecords
+            )
+        );
+
+
+        // ---------------------------------------------
+        // RESULT
+        // ---------------------------------------------
+
+        if (
+            successful ===
+            records.length
+        ) {
+
+            setStatus(
+                `✅ Dosage saved successfully. ${successful} notification(s) scheduled.`,
+                "success"
+            );
+
+        }
+
+        else {
+
+            setStatus(
+                `⚠️ Dosage saved locally. ${successful} of ${records.length} notification(s) scheduled.`,
+                "warning"
+            );
+
+        }
+
+
+        loadRecords();
+
+
+        resetForm();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Save error:",
+            error
+        );
+
+
+        setStatus(
+            "❌ " +
+            error.message,
+            "error"
+        );
+
+    }
+
+
+    saveButton.disabled =
+        false;
+
+
+    saveButton.textContent =
+        "💾 Save Dosage & Schedule Notification";
+
+}
+
+
+// =====================================================
+// LOAD RECORDS
+// =====================================================
+
+function loadRecords() {
+
+    const container =
+        document.getElementById(
+            "recordsContainer"
+        );
+
+
+    const allRecords =
+        JSON.parse(
+            localStorage.getItem(
+                "dosageRecords"
+            ) || "[]"
+        );
+
+
+    const records =
+        allRecords.filter(
+            record => {
+
+                return (
+                    String(
+                        record.patientId ||
+                        ""
+                    )
+                        .trim()
+                        .toUpperCase()
+                    ===
+                    String(
+                        patientId
+                    )
+                        .trim()
+                        .toUpperCase()
+                );
+
+            }
+        );
+
+
+    if (
+        records.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <p>
+                No dosage records found.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        "";
+
+
+    records
+        .slice()
+        .reverse()
+        .forEach(
+            record => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    "record " +
+                    (
+                        record.type ===
+                        "Insulin"
+                            ? "insulin"
+                            : ""
+                    );
+
+
+                div.innerHTML = `
+
+                    <h3>
+
+                        ${
+                            record.type ===
+                            "Insulin"
+                                ? "💉 Insulin"
+                                : "💊 Medicine"
+                        }
+
+                    </h3>
+
+                    <p>
+
+                        <strong>
+                            Name:
+                        </strong>
+
+                        ${escapeHTML(
+                            record.name
+                        )}
+
+                    </p>
+
+                    <p>
+
+                        <strong>
+                            Dose:
+                        </strong>
+
+                        ${escapeHTML(
+                            record.dose
+                        )}
+
+                    </p>
+
+                    <p>
+
+                        <strong>
+                            Time:
+                        </strong>
+
+                        ${escapeHTML(
+                            record.time
+                        )}
+
+                    </p>
+
+                    <p>
+
+                        <strong>
+                            Nurse:
+                        </strong>
+
+                        ${escapeHTML(
+                            record.nurseName
+                        )}
+
+                    </p>
+
+                `;
+
+
+                container.appendChild(
+                    div
+                );
+
+            }
+        );
+
+}
+
+
+// =====================================================
+// RESET FORM
+// =====================================================
+
+function resetForm() {
+
+    document.getElementById(
+        "medicineContainer"
+    ).innerHTML =
+        "";
+
+
+    document.getElementById(
+        "nurseName"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "insulinType"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "insulinDose"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "insulinTime"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "glucoseReading"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "injectionSite"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "insulinInstructions"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "medicineSection"
+    ).classList.add(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "insulinSection"
+    ).classList.add(
+        "hidden"
+    );
+
+
+    selectedTreatment =
+        "";
+
+
+    medicineCount =
+        0;
+
+}
+
+
+// =====================================================
+// HTML ESCAPE
+// =====================================================
+
+function escapeHTML(value) {
+
+    return String(
+        value || ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+// =====================================================
+// BUTTON EVENTS
+// =====================================================
+
+document.getElementById(
+    "medicineButton"
+).addEventListener(
+    "click",
+    showMedicine
+);
+
+
+document.getElementById(
+    "insulinButton"
+).addEventListener(
+    "click",
+    showInsulin
+);
+
+
+document.getElementById(
+    "bothButton"
+).addEventListener(
+    "click",
+    showBoth
+);
+
+
+document.getElementById(
+    "addMedicineButton"
+).addEventListener(
+    "click",
+    addMedicine
+);
+
+
+document.getElementById(
+    "saveButton"
+).addEventListener(
+    "click",
+    saveDosage
+);
+
+
+// =====================================================
+// LOGOUT
+// =====================================================
+
+document.getElementById(
+    "logoutButton"
+).addEventListener(
+    "click",
+    function() {
+
+        localStorage.removeItem(
+            "loggedInPatientId"
+        );
+
+        localStorage.removeItem(
+            "patientLoggedIn"
+        );
+
+        localStorage.removeItem(
+            "currentPatient"
+        );
+
+        window.location.href =
+            "./index.html";
+
+    }
+);
+
+
+// =====================================================
+// INITIAL LOAD
+// =====================================================
+
+loadRecords();
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Medication & Insulin Reminders</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        header {
+            background: #1976d2;
+            color: white;
+            padding: 28px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+            font-size: 36px;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1000px;
+            margin: 30px auto;
+        }
+
+        .box {
+            background: white;
+            padding: 28px;
+            margin-bottom: 22px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 28px;
+        }
+
+        .patient-id {
+            color: #1976d2;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        button {
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .enable-btn {
+            background: #1976d2;
+            color: white;
+        }
+
+        .enable-btn:hover {
+            background: #125ca5;
+        }
+
+        .enable-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .logout-btn {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #b71c1c;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #eef4ff;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .warning {
+            background: #fff8e1;
+            color: #8d6e00;
+        }
+
+        .schedule-card {
+            border-left: 5px solid #1976d2;
+            background: #f8fbff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .schedule-card.insulin {
+            border-left-color: #e65100;
+        }
+
+        .schedule-card h3 {
+            margin-top: 0;
+            font-size: 21px;
+        }
+
+        .time {
+            color: #1976d2;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+            font-size: 17px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .debug {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #777;
+            word-break: break-all;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>💊 Medication & Insulin Reminders</h1>
+
+    <p>Automatic Notification System</p>
+
+</header>
+
+
+
+<div class="container">
+
+
+    <!-- =================================================
+         PATIENT INFORMATION
+    ================================================== -->
+
+    <div class="box">
+
+        <h2>👤 Patient Information</h2>
+
+        <p>
+
+            Patient ID:
+
+            <span
+                id="patientId"
+                class="patient-id">
+            </span>
+
+        </p>
+
+    </div>
+
+
+
+    <!-- =================================================
+         NOTIFICATION SETTINGS
+    ================================================== -->
+
+    <div class="box">
+
+        <h2>🔔 Notification Settings</h2>
+
+        <p>
+
+            Enable notifications to receive medication
+            and insulin reminders even when this page
+            is closed.
+
+        </p>
+
+
+        <button
+            id="enableBtn"
+            class="enable-btn">
+
+            Enable Notifications
+
+        </button>
+
+
+        <div
+            id="status"
+            class="status">
+
+            Notifications are not enabled yet.
+
+        </div>
+
+
+        <div
+            id="debug"
+            class="debug">
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         TODAY'S SCHEDULE
+    ================================================== -->
+
+    <div class="box">
+
+        <h2>📋 Today's Medication Schedule</h2>
+
+        <div id="scheduleList">
+
+            <div class="empty">
+
+                Loading medication schedule...
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         LOGOUT
+    ================================================== -->
+
+    <button
+        id="logoutBtn"
+        class="logout-btn">
+
+        Logout
+
+    </button>
+
+
+    <br>
+
+
+    <a
+        href="./profile.html"
+        class="back">
+
+        ← Back to Profile
+
+    </a>
+
+
+</div>
+
+
+
+<script>
+
+
+// =====================================================
+// NODE.JS BACKEND
+// =====================================================
+//
+// IMPORTANT:
+//
+// The HTML page is opened using Live Server.
+//
+// Example:
+//
+// http://127.0.0.1:5500
+//
+// OR:
+//
+// http://localhost:5500
+//
+// Node.js is running separately on port 3000.
+//
+// We use the SAME hostname as the current page.
+// This prevents localhost / 127.0.0.1 mismatch problems.
+// =====================================================
+
+const API_SERVER =
+    window.location.protocol +
+    "//" +
+    window.location.hostname +
+    ":3000";
+
+
+// =====================================================
+// PATIENT ID
+// =====================================================
+
+const patientId =
+    localStorage.getItem(
+        "loggedInPatientId"
+    );
+
+
+if (!patientId) {
+
+    window.location.href =
+        "./index.html";
+
+}
+
+
+document.getElementById(
+    "patientId"
+).textContent =
+    patientId;
+
+
+
+// =====================================================
+// STATUS
+// =====================================================
+
+function setStatus(
+    message,
+    type = ""
+) {
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+    status.textContent =
+        message;
+
+    status.className =
+        "status";
+
+    if (type) {
+
+        status.classList.add(
+            type
+        );
+
+    }
+
+}
+
+
+
+// =====================================================
+// DEBUG
+// =====================================================
+
+function setDebug(message) {
+
+    document.getElementById(
+        "debug"
+    ).textContent =
+        message;
+
+}
+
+
+
+// =====================================================
+// SERVICE WORKER
+// =====================================================
+
+async function registerServiceWorker() {
+
+    if (
+        !("serviceWorker" in navigator)
+    ) {
+
+        throw new Error(
+            "Service Worker is not supported by this browser."
+        );
+
+    }
+
+
+    const registration =
+        await navigator.serviceWorker.register(
+            "./sw.js",
+            {
+                scope: "./"
+            }
+        );
+
+
+    await navigator.serviceWorker.ready;
+
+
+    console.log(
+        "✅ Service Worker registered."
+    );
+
+
+    return registration;
+
+}
+
+
+
+// =====================================================
+// VAPID KEY CONVERSION
+// =====================================================
+
+function urlBase64ToUint8Array(
+    base64String
+) {
+
+    const padding =
+        "=".repeat(
+            (4 -
+                base64String.length % 4) % 4
+        );
+
+
+    const base64 =
+        (
+            base64String +
+            padding
+        )
+            .replace(
+                /-/g,
+                "+"
+            )
+            .replace(
+                /_/g,
+                "/"
+            );
+
+
+    const rawData =
+        window.atob(
+            base64
+        );
+
+
+    const outputArray =
+        new Uint8Array(
+            rawData.length
+        );
+
+
+    for (
+        let i = 0;
+        i < rawData.length;
+        i++
+    ) {
+
+        outputArray[i] =
+            rawData.charCodeAt(i);
+
+    }
+
+
+    return outputArray;
+
+}
+
+
+
+// =====================================================
+// GET VAPID PUBLIC KEY
+// =====================================================
+
+async function getVapidPublicKey() {
+
+    const url =
+        API_SERVER +
+        "/api/public-key";
+
+
+    console.log(
+        "Connecting to:",
+        url
+    );
+
+
+    setDebug(
+        "Connecting to " + url
+    );
+
+
+    const response =
+        await fetch(
+            url,
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Notification server returned HTTP " +
+            response.status
+        );
+
+    }
+
+
+    const data =
+        await response.json();
+
+
+    console.log(
+        "VAPID response:",
+        data
+    );
+
+
+    if (
+        !data.success ||
+        !data.publicKey
+    ) {
+
+        throw new Error(
+            "VAPID public key was not received."
+        );
+
+    }
+
+
+    return data.publicKey;
+
+}
+
+
+
+// =====================================================
+// ENABLE NOTIFICATIONS
+// =====================================================
+
+async function enableNotifications() {
+
+    const button =
+        document.getElementById(
+            "enableBtn"
+        );
+
+
+    try {
+
+        button.disabled =
+            true;
+
+
+        setStatus(
+            "⏳ Checking notification support..."
+        );
+
+
+        // ---------------------------------------------
+        // CHECK BROWSER
+        // ---------------------------------------------
+
+        if (
+            !("Notification" in window)
+        ) {
+
+            throw new Error(
+                "Notifications are not supported by this browser."
+            );
+
+        }
+
+
+
+        // ---------------------------------------------
+        // ASK PERMISSION
+        // ---------------------------------------------
+
+        let permission =
+            Notification.permission;
+
+
+        if (
+            permission !== "granted"
+        ) {
+
+            setStatus(
+                "⏳ Please allow notifications..."
+            );
+
+
+            permission =
+                await Notification.requestPermission();
+
+        }
+
+
+        if (
+            permission !== "granted"
+        ) {
+
+            throw new Error(
+                "Notification permission was not granted."
+            );
+
+        }
+
+
+
+        // ---------------------------------------------
+        // SERVICE WORKER
+        // ---------------------------------------------
+
+        setStatus(
+            "⏳ Registering notification service..."
+        );
+
+
+        const registration =
+            await registerServiceWorker();
+
+
+
+        // ---------------------------------------------
+        // VAPID KEY
+        // ---------------------------------------------
+
+        setStatus(
+            "⏳ Connecting to notification server..."
+        );
+
+
+        const publicKey =
+            await getVapidPublicKey();
+
+
+
+        // ---------------------------------------------
+        // EXISTING SUBSCRIPTION
+        // ---------------------------------------------
+
+        let subscription =
+            await registration
+                .pushManager
+                .getSubscription();
+
+
+
+        // ---------------------------------------------
+        // CREATE SUBSCRIPTION
+        // ---------------------------------------------
+
+        if (!subscription) {
+
+            setStatus(
+                "⏳ Creating push notification subscription..."
+            );
+
+
+            subscription =
+                await registration
+                    .pushManager
+                    .subscribe({
+
+                        userVisibleOnly:
+                            true,
+
+                        applicationServerKey:
+                            urlBase64ToUint8Array(
+                                publicKey
+                            )
+
+                    });
+
+        }
+
+
+        console.log(
+            "Push subscription:",
+            subscription
+        );
+
+
+
+        // ---------------------------------------------
+        // SEND TO NODE SERVER
+        // ---------------------------------------------
+
+        setStatus(
+            "⏳ Registering patient with notification server..."
+        );
+
+
+        const response =
+            await fetch(
+                API_SERVER +
+                "/api/subscribe",
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            patientId:
+                                patientId,
+
+                            subscription:
+                                subscription
+
+                        })
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Subscription request failed with HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Could not register notification subscription."
+            );
+
+        }
+
+
+
+        // ---------------------------------------------
+        // SUCCESS
+        // ---------------------------------------------
+
+        setStatus(
+            "✅ Notifications enabled successfully! You will receive medication and insulin reminders at the scheduled time.",
+            "success"
+        );
+
+
+        setDebug(
+            "Patient " +
+            patientId +
+            " is registered for push notifications."
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Notification error:",
+            error
+        );
+
+
+        setStatus(
+            "❌ " +
+            error.message,
+            "error"
+        );
+
+
+        setDebug(
+            "Backend: " +
+            API_SERVER
+        );
+
+    }
+
+
+    button.disabled =
+        false;
+
+}
+
+
+
+// =====================================================
+// LOAD SCHEDULE
+// =====================================================
+
+function loadSchedules() {
+
+    const container =
+        document.getElementById(
+            "scheduleList"
+        );
+
+
+    const allRecords =
+        JSON.parse(
+            localStorage.getItem(
+                "dosageRecords"
+            ) || "[]"
+        );
+
+
+    const records =
+        allRecords.filter(
+            record => {
+
+                return (
+
+                    String(
+                        record.patientId ||
+                        ""
+                    )
+                        .trim()
+                        .toUpperCase()
+
+                    ===
+
+                    String(
+                        patientId
+                    )
+                        .trim()
+                        .toUpperCase()
+
+                );
+
+            }
+        );
+
+
+    if (
+        records.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                No medication or insulin
+                schedule found.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        "";
+
+
+    records
+        .slice()
+        .reverse()
+        .forEach(
+            record => {
+
+                const type =
+                    record.type ||
+                    "Medicine";
+
+
+                const name =
+                    record.name ||
+                    record.medicineName ||
+                    record.insulinType ||
+                    "Not specified";
+
+
+                const dose =
+                    record.dose ||
+                    record.prescribedDose ||
+                    "Not specified";
+
+
+                const time =
+                    record.time ||
+                    record.medicationTime ||
+                    record.administrationTime ||
+                    "--:--";
+
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "schedule-card " +
+                    (
+                        type
+                            .toLowerCase()
+                        ===
+                        "insulin"
+                            ? "insulin"
+                            : ""
+                    );
+
+
+                card.innerHTML = `
+
+                    <h3>
+
+                        ${
+                            type
+                                .toLowerCase()
+                            ===
+                            "insulin"
+
+                                ? "💉 Insulin"
+
+                                : "💊 Medicine"
+                        }
+
+                    </h3>
+
+
+                    <p>
+
+                        <strong>
+                            Name:
+                        </strong>
+
+                        ${escapeHTML(name)}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Dose:
+                        </strong>
+
+                        ${escapeHTML(dose)}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Scheduled Time:
+                        </strong>
+
+                    </p>
+
+
+                    <div class="time">
+
+                        ${escapeHTML(time)}
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(
+                    card
+                );
+
+            }
+        );
+
+}
+
+
+
+// =====================================================
+// HTML ESCAPE
+// =====================================================
+
+function escapeHTML(value) {
+
+    return String(
+        value || ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+
+// =====================================================
+// LOGOUT
+// =====================================================
+
+document.getElementById(
+    "logoutBtn"
+).addEventListener(
+    "click",
+    function() {
+
+        localStorage.removeItem(
+            "loggedInPatientId"
+        );
+
+        localStorage.removeItem(
+            "patientLoggedIn"
+        );
+
+        localStorage.removeItem(
+            "currentPatient"
+        );
+
+        window.location.href =
+            "./index.html";
+
+    }
+);
+
+
+
+// =====================================================
+// BUTTON
+// =====================================================
+
+document.getElementById(
+    "enableBtn"
+).addEventListener(
+    "click",
+    enableNotifications
+);
+
+
+
+// =====================================================
+// INITIAL LOAD
+// =====================================================
+
+loadSchedules();
+
+
+</script>
+
+</body>
+
+</html>

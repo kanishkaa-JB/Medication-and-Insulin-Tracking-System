@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Appointment Management</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background-image:
+
+                linear-gradient(
+                    rgba(255,255,255,0.93),
+                    rgba(255,255,255,0.95)
+                ),
+
+                url("https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=2000&q=85");
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-attachment: fixed;
+
+            color: #333;
+        }
+
+
+        .container {
+
+            width: 95%;
+
+            max-width: 1100px;
+
+            margin: auto;
+
+            padding: 30px 0 50px;
+        }
+
+
+        /* HEADER */
+
+        .header {
+
+            text-align: center;
+
+            padding-bottom: 30px;
+
+            border-bottom: 2px solid #dcecef;
+
+            margin-bottom: 30px;
+        }
+
+
+        .header-icon {
+
+            width: 95px;
+
+            height: 95px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            background: #e3f7fa;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 48px;
+        }
+
+
+        .header h1 {
+
+            color: #075d74;
+
+            font-size: 36px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .header p {
+
+            color: #777;
+
+            font-size: 18px;
+        }
+
+
+        /* APPOINTMENT FORM */
+
+        .appointment-card {
+
+            background: rgba(255,255,255,0.97);
+
+            border: 1px solid #d2e7eb;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            margin-bottom: 30px;
+
+            box-shadow:
+                0 5px 18px
+                rgba(0,0,0,0.05);
+        }
+
+
+        .section-title {
+
+            color: #08677e;
+
+            font-size: 26px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 20px;
+        }
+
+
+        .form-group {
+
+            width: 100%;
+        }
+
+
+        label {
+
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+
+            color: #333;
+
+            font-size: 16px;
+        }
+
+
+        input,
+        select,
+        textarea {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border: 1px solid #c9dfe4;
+
+            border-radius: 9px;
+
+            font-size: 16px;
+
+            outline: none;
+
+            background: white;
+        }
+
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+
+            border-color: #07819a;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(7,129,154,0.10);
+        }
+
+
+        textarea {
+
+            min-height: 100px;
+
+            resize: vertical;
+        }
+
+
+        .full-width {
+
+            grid-column: 1 / -1;
+        }
+
+
+        /* BUTTON */
+
+        .button-row {
+
+            display: flex;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+            margin-top: 25px;
+        }
+
+
+        .btn {
+
+            border: none;
+
+            padding: 14px 22px;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .btn-primary {
+
+            background: #087f98;
+
+            color: white;
+        }
+
+
+        .btn-primary:hover {
+
+            background: #066579;
+        }
+
+
+        .btn-secondary {
+
+            background: #e3f5f8;
+
+            color: #075f75;
+        }
+
+
+        .btn-secondary:hover {
+
+            background: #d1edf2;
+        }
+
+
+        /* APPOINTMENT LIST */
+
+        .appointments-card {
+
+            background: rgba(255,255,255,0.97);
+
+            border: 1px solid #d2e7eb;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            overflow-x: auto;
+        }
+
+
+        .appointments-title {
+
+            color: #08677e;
+
+            font-size: 26px;
+
+            margin-bottom: 22px;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 850px;
+        }
+
+
+        th {
+
+            background: #087d95;
+
+            color: white;
+
+            padding: 14px;
+
+            text-align: left;
+        }
+
+
+        td {
+
+            padding: 14px;
+
+            border-bottom: 1px solid #e2ecef;
+
+            vertical-align: top;
+        }
+
+
+        tr:hover td {
+
+            background: #f5fbfc;
+        }
+
+
+        .empty {
+
+            text-align: center;
+
+            color: #888;
+
+            padding: 30px;
+        }
+
+
+        /* STATUS BADGES */
+
+        .badge {
+
+            display: inline-block;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+
+        .scheduled {
+
+            background: #e4f6fa;
+
+            color: #08758b;
+        }
+
+
+        .completed {
+
+            background: #e9f7ed;
+
+            color: #287a42;
+        }
+
+
+        .cancelled {
+
+            background: #ffeded;
+
+            color: #b83232;
+        }
+
+
+        /* STATUS MESSAGE */
+
+        .status {
+
+            display: none;
+
+            padding: 14px;
+
+            border-radius: 9px;
+
+            margin-top: 20px;
+
+            font-weight: bold;
+        }
+
+
+        .success {
+
+            display: block;
+
+            background: #e9f8ee;
+
+            color: #287a42;
+
+            border: 1px solid #b8e2c4;
+        }
+
+
+        .error {
+
+            display: block;
+
+            background: #fff0f0;
+
+            color: #b83232;
+
+            border: 1px solid #e5b5b5;
+        }
+
+
+        /* NAVIGATION */
+
+        .navigation {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+            margin-top: 30px;
+        }
+
+
+        .navigation a {
+
+            text-decoration: none;
+
+            background: #e4f5f8;
+
+            color: #075f75;
+
+            padding: 13px 20px;
+
+            border-radius: 10px;
+
+            font-weight: bold;
+        }
+
+
+        .navigation a:hover {
+
+            background: #d1edf2;
+        }
+
+
+        @media(max-width:800px) {
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .full-width {
+
+                grid-column: auto;
+            }
+
+
+            .header h1 {
+
+                font-size: 29px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="header-icon">
+            📅
+        </div>
+
+
+        <h1>
+            Appointment Management
+        </h1>
+
+
+        <p>
+            Medication &amp; Insulin Tracking System
+        </p>
+
+    </div>
+
+
+
+    <!-- APPOINTMENT FORM -->
+
+    <div class="appointment-card">
+
+        <h2 class="section-title">
+            📅 Book New Appointment
+        </h2>
+
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label for="doctorName">
+                    Doctor Name *
+                </label>
+
+                <input
+                    type="text"
+                    id="doctorName"
+                    placeholder="Enter doctor name"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="hospitalName">
+                    Hospital / Clinic *
+                </label>
+
+                <input
+                    type="text"
+                    id="hospitalName"
+                    placeholder="Enter hospital or clinic"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="specialization">
+                    Doctor Specialization *
+                </label>
+
+                <select id="specialization">
+
+                    <option value="">
+                        Select specialization
+                    </option>
+
+                    <option value="General Physician">
+                        General Physician
+                    </option>
+
+                    <option value="Diabetologist">
+                        Diabetologist
+                    </option>
+
+                    <option value="Endocrinologist">
+                        Endocrinologist
+                    </option>
+
+                    <option value="Cardiologist">
+                        Cardiologist
+                    </option>
+
+                    <option value="Neurologist">
+                        Neurologist
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="appointmentType">
+                    Appointment Type *
+                </label>
+
+                <select id="appointmentType">
+
+                    <option value="">
+                        Select appointment type
+                    </option>
+
+                    <option value="Regular Consultation">
+                        Regular Consultation
+                    </option>
+
+                    <option value="Follow-up">
+                        Follow-up
+                    </option>
+
+                    <option value="Medication Review">
+                        Medication Review
+                    </option>
+
+                    <option value="Insulin Review">
+                        Insulin Review
+                    </option>
+
+                    <option value="Emergency Consultation">
+                        Emergency Consultation
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="appointmentDate">
+                    Appointment Date *
+                </label>
+
+                <input
+                    type="date"
+                    id="appointmentDate"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="appointmentTime">
+                    Appointment Time *
+                </label>
+
+                <input
+                    type="time"
+                    id="appointmentTime"
+                >
+
+            </div>
+
+
+            <div class="form-group full-width">
+
+                <label for="reason">
+                    Reason for Appointment *
+                </label>
+
+                <textarea
+                    id="reason"
+                    placeholder="Enter reason for appointment"
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group full-width">
+
+                <label for="notes">
+                    Additional Notes
+                </label>
+
+                <textarea
+                    id="notes"
+                    placeholder="Enter any additional information"
+                ></textarea>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="button-row">
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="bookAppointment()"
+            >
+                📅 Book Appointment
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="clearAppointmentForm()"
+            >
+                Clear
+            </button>
+
+        </div>
+
+
+        <div
+            id="appointmentStatus"
+            class="status"
+        ></div>
+
+    </div>
+
+
+
+    <!-- APPOINTMENT HISTORY -->
+
+    <div class="appointments-card">
+
+        <h2 class="appointments-title">
+            📋 My Appointments
+        </h2>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Time
+                    </th>
+
+                    <th>
+                        Doctor
+                    </th>
+
+                    <th>
+                        Hospital / Clinic
+                    </th>
+
+                    <th>
+                        Type
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="appointmentTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <!-- NAVIGATION -->
+
+    <div class="navigation">
+
+
+        <a href="profile.html">
+            ← Profile
+        </a>
+
+
+        <a href="nurse.html">
+            💊 Nurse Dosage
+        </a>
+
+
+        <a href="reminder.html">
+            🔔 Reminders
+        </a>
+
+
+        <a href="reporting.html">
+            📋 Reports
+        </a>
+
+
+        <a
+            href="index.html"
+            onclick="logoutPatient()"
+        >
+            🚪 Logout
+        </a>
+
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================================================
+   GET LOGGED-IN PATIENT ID
+   ========================================================= */
+
+const loggedInPatientId =
+    localStorage.getItem(
+        "loggedInPatientId"
+    );
+
+
+if (!loggedInPatientId) {
+
+    alert(
+        "Please login first."
+    );
+
+    window.location.href =
+        "index.html";
+}
+
+
+/* =========================================================
+   PAGE LOAD
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const dateInput =
+            document.getElementById(
+                "appointmentDate"
+            );
+
+
+        const today =
+            new Date()
+            .toISOString()
+            .split("T")[0];
+
+
+        dateInput.min =
+            today;
+
+
+        loadAppointments();
+
+    }
+);
+
+
+/* =========================================================
+   BOOK APPOINTMENT
+   ========================================================= */
+
+function bookAppointment() {
+
+
+    const doctorName =
+        document
+        .getElementById("doctorName")
+        .value
+        .trim();
+
+
+    const hospitalName =
+        document
+        .getElementById("hospitalName")
+        .value
+        .trim();
+
+
+    const specialization =
+        document
+        .getElementById("specialization")
+        .value;
+
+
+    const appointmentType =
+        document
+        .getElementById("appointmentType")
+        .value;
+
+
+    const appointmentDate =
+        document
+        .getElementById("appointmentDate")
+        .value;
+
+
+    const appointmentTime =
+        document
+        .getElementById("appointmentTime")
+        .value;
+
+
+    const reason =
+        document
+        .getElementById("reason")
+        .value
+        .trim();
+
+
+    const notes =
+        document
+        .getElementById("notes")
+        .value
+        .trim();
+
+
+    if (
+
+        doctorName === "" ||
+
+        hospitalName === "" ||
+
+        specialization === "" ||
+
+        appointmentType === "" ||
+
+        appointmentDate === "" ||
+
+        appointmentTime === "" ||
+
+        reason === ""
+
+    ) {
+
+        showStatus(
+            "Please fill all required fields.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const appointment = {
+
+        patientId:
+            loggedInPatientId,
+
+        doctorName:
+            doctorName,
+
+        hospitalName:
+            hospitalName,
+
+        specialization:
+            specialization,
+
+        appointmentType:
+            appointmentType,
+
+        date:
+            appointmentDate,
+
+        time:
+            appointmentTime,
+
+        reason:
+            reason,
+
+        notes:
+            notes,
+
+        status:
+            "Scheduled",
+
+        createdAt:
+            new Date().toISOString()
+
+    };
+
+
+    let appointments =
+        JSON.parse(
+            localStorage.getItem(
+                "appointments"
+            )
+        ) || [];
+
+
+    appointments.push(
+        appointment
+    );
+
+
+    localStorage.setItem(
+        "appointments",
+        JSON.stringify(
+            appointments
+        )
+    );
+
+
+    showStatus(
+        "Appointment booked successfully.",
+        "success"
+    );
+
+
+    clearAppointmentForm();
+
+    loadAppointments();
+
+}
+
+
+/* =========================================================
+   LOAD APPOINTMENTS
+   ========================================================= */
+
+function loadAppointments() {
+
+
+    const table =
+        document.getElementById(
+            "appointmentTable"
+        );
+
+
+    let appointments =
+        JSON.parse(
+            localStorage.getItem(
+                "appointments"
+            )
+        ) || [];
+
+
+    /*
+       Show only appointments
+       for current patient.
+    */
+
+    appointments =
+        appointments.filter(
+            function(appointment) {
+
+                return (
+                    appointment.patientId ===
+                    loggedInPatientId
+                );
+
+            }
+        );
+
+
+    /*
+       Sort appointments
+       by date and time.
+    */
+
+    appointments.sort(
+        function(a,b) {
+
+            const first =
+                a.date + " " + a.time;
+
+            const second =
+                b.date + " " + b.time;
+
+            return first.localeCompare(
+                second
+            );
+
+        }
+    );
+
+
+    if (
+        appointments.length === 0
+    ) {
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty"
+                >
+
+                    No appointments booked yet.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+    }
+
+
+    table.innerHTML = "";
+
+
+    appointments.forEach(
+        function(appointment) {
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            let badgeClass =
+                "scheduled";
+
+
+            if (
+                appointment.status ===
+                "Completed"
+            ) {
+
+                badgeClass =
+                    "completed";
+
+            }
+
+
+            if (
+                appointment.status ===
+                "Cancelled"
+            ) {
+
+                badgeClass =
+                    "cancelled";
+
+            }
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHTML(
+                        appointment.date
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        appointment.time
+                    )}
+                </td>
+
+                <td>
+
+                    <strong>
+                        ${escapeHTML(
+                            appointment.doctorName
+                        )}
+                    </strong>
+
+                    <br>
+
+                    <small>
+                        ${escapeHTML(
+                            appointment.specialization
+                        )}
+                    </small>
+
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        appointment.hospitalName
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        appointment.appointmentType
+                    )}
+                </td>
+
+                <td>
+
+                    <span
+                        class="badge ${badgeClass}"
+                    >
+
+                        ${escapeHTML(
+                            appointment.status
+                        )}
+
+                    </span>
+
+                </td>
+
+            `;
+
+
+            table.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR FORM
+   ========================================================= */
+
+function clearAppointmentForm() {
+
+
+    document.getElementById(
+        "doctorName"
+    ).value = "";
+
+
+    document.getElementById(
+        "hospitalName"
+    ).value = "";
+
+
+    document.getElementById(
+        "specialization"
+    ).value = "";
+
+
+    document.getElementById(
+        "appointmentType"
+    ).value = "";
+
+
+    document.getElementById(
+        "appointmentDate"
+    ).value = "";
+
+
+    document.getElementById(
+        "appointmentTime"
+    ).value = "";
+
+
+    document.getElementById(
+        "reason"
+    ).value = "";
+
+
+    document.getElementById(
+        "notes"
+    ).value = "";
+
+}
+
+
+/* =========================================================
+   STATUS MESSAGE
+   ========================================================= */
+
+function showStatus(
+    message,
+    type
+) {
+
+
+    const element =
+        document.getElementById(
+            "appointmentStatus"
+        );
+
+
+    element.textContent =
+        message;
+
+
+    element.className =
+        "status " +
+        (
+            type === "success"
+            ?
+            "success"
+            :
+            "error"
+        );
+
+
+    setTimeout(
+        function() {
+
+            element.style.display =
+                "none";
+
+        },
+        5000
+    );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+function logoutPatient() {
+
+    localStorage.removeItem(
+        "loggedInPatientId"
+    );
+
+
+    localStorage.removeItem(
+        "patientLoggedIn"
+    );
+
+}
+
+</script>
+
+
+</body>
+
+</html>

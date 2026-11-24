@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Registration</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    rgba(255,255,255,0.90),
+                    rgba(255,255,255,0.90)
+                ),
+                url("medical-bg.jpg");
+
+            background-size: cover;
+
+            background-position: center;
+
+            padding: 30px 20px;
+
+            color: #222;
+
+        }
+
+        .container {
+
+            max-width: 1100px;
+
+            margin: auto;
+
+            background: rgba(255,255,255,0.97);
+
+            padding: 35px 40px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 8px 30px
+                rgba(0,0,0,0.12);
+
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+
+        }
+
+        .logo {
+
+            width: 65px;
+            height: 65px;
+
+            margin: auto;
+
+            margin-bottom: 10px;
+
+            border-radius: 50%;
+
+            background: #e0f7fa;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 32px;
+
+        }
+
+        .header h1 {
+
+            color: #05637c;
+
+            font-size: 36px;
+
+            margin-bottom: 8px;
+
+        }
+
+        .header p {
+
+            color: #666;
+
+            font-size: 18px;
+
+        }
+
+        .line {
+
+            height: 3px;
+
+            background: #d6edf2;
+
+            margin: 25px 0 30px;
+
+        }
+
+        /* ================= SECTION ================= */
+
+        .section {
+
+            margin-bottom: 32px;
+
+        }
+
+        .section-title {
+
+            border-left: 6px solid #087c96;
+
+            padding-left: 12px;
+
+            color: #05637c;
+
+            font-size: 23px;
+
+            margin-bottom: 20px;
+
+        }
+
+        .row {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 22px 30px;
+
+            margin-bottom: 20px;
+
+        }
+
+        .field {
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+        .field.full {
+
+            grid-column: 1 / -1;
+
+        }
+
+        label {
+
+            font-weight: bold;
+
+            margin-bottom: 9px;
+
+            font-size: 16px;
+
+        }
+
+        .required {
+
+            color: red;
+
+        }
+
+        input,
+        select,
+        textarea {
+
+            width: 100%;
+
+            padding: 15px 18px;
+
+            border: 1px solid #bdd8df;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+
+            outline: none;
+
+            background: white;
+
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+
+            border-color: #087c96;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(8,124,150,0.10);
+
+        }
+
+        textarea {
+
+            min-height: 110px;
+
+            resize: vertical;
+
+        }
+
+        /* ================= MEDICAL NOTES ================= */
+
+        .medical-note {
+
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 17px;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            line-height: 1.6;
+
+        }
+
+        .medical-note.show {
+
+            display: block;
+
+        }
+
+        .diabetes-note {
+
+            background: #effaff;
+
+            border-left: 5px solid #087c96;
+
+            color: #245866;
+
+        }
+
+        .non-diabetes-note {
+
+            background: #f0fdf4;
+
+            border-left: 5px solid #16a34a;
+
+            color: #166534;
+
+        }
+
+        .null-note {
+
+            background: #f8fafc;
+
+            border-left: 5px solid #64748b;
+
+            color: #475569;
+
+        }
+
+        /* ================= PASSWORD ================= */
+
+        .password-note {
+
+            font-size: 13px;
+
+            color: #666;
+
+            margin-top: 6px;
+
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .button-area {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 18px;
+
+            margin-top: 30px;
+
+        }
+
+        button {
+
+            padding: 15px 35px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+        }
+
+        .register-btn {
+
+            background: #087c96;
+
+            color: white;
+
+        }
+
+        .register-btn:hover {
+
+            background: #065f73;
+
+        }
+
+        .reset-btn {
+
+            background: #64748b;
+
+            color: white;
+
+        }
+
+        .reset-btn:hover {
+
+            background: #475569;
+
+        }
+
+        /* ================= MESSAGE ================= */
+
+        .message {
+
+            display: none;
+
+            padding: 14px;
+
+            margin-top: 20px;
+
+            border-radius: 8px;
+
+            text-align: center;
+
+            font-weight: bold;
+
+        }
+
+        .success {
+
+            display: block;
+
+            background: #dcfce7;
+
+            color: #166534;
+
+        }
+
+        .error {
+
+            display: block;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+        }
+
+        /* ================= PATIENT ID ================= */
+
+        .patient-id-box {
+
+            display: none;
+
+            margin-top: 20px;
+
+            padding: 20px;
+
+            background: #e0f7fa;
+
+            border: 2px solid #087c96;
+
+            border-radius: 10px;
+
+            text-align: center;
+
+        }
+
+        .patient-id-box.show {
+
+            display: block;
+
+        }
+
+        .patient-id-box h3 {
+
+            color: #05637c;
+
+            margin-bottom: 10px;
+
+        }
+
+        .patient-id {
+
+            font-size: 25px;
+
+            font-weight: bold;
+
+            color: #087c96;
+
+            letter-spacing: 2px;
+
+        }
+
+        /* ================= LOGIN ================= */
+
+        .login-link {
+
+            text-align: center;
+
+            margin-top: 25px;
+
+            color: #555;
+
+            font-size: 17px;
+
+        }
+
+        .login-link a {
+
+            color: #087c96;
+
+            font-weight: bold;
+
+            text-decoration: none;
+
+        }
+
+        .login-link a:hover {
+
+            text-decoration: underline;
+
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 750px) {
+
+            .row {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .field.full {
+
+                grid-column: auto;
+
+            }
+
+            .container {
+
+                padding: 25px 20px;
+
+            }
+
+            .header h1 {
+
+                font-size: 28px;
+
+            }
+
+            .button-area {
+
+                flex-direction: column;
+
+            }
+
+            button {
+
+                width: 100%;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="header">
+
+        <div class="logo">
+            🏥
+        </div>
+
+        <h1>
+            Patient Registration
+        </h1>
+
+        <p>
+            Medication & Insulin Tracking System
+        </p>
+
+    </div>
+
+
+    <div class="line"></div>
+
+
+    <!-- ================= PERSONAL INFORMATION ================= -->
+
+    <div class="section">
+
+        <h2 class="section-title">
+            Personal Information
+        </h2>
+
+
+        <div class="row">
+
+
+            <div class="field">
+
+                <label>
+                    Full Name
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="fullName"
+                    placeholder="Enter full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Date of Birth
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="date"
+                    id="dob"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Gender
+                    <span class="required">*</span>
+                </label>
+
+                <select
+                    id="gender"
+                    required
+                >
+
+                    <option value="">
+                        Select Gender
+                    </option>
+
+                    <option value="Male">
+                        Male
+                    </option>
+
+                    <option value="Female">
+                        Female
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Blood Group
+                    <span class="required">*</span>
+                </label>
+
+                <select
+                    id="bloodGroup"
+                    required
+                >
+
+                    <option value="">
+                        Select Blood Group
+                    </option>
+
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= CONTACT INFORMATION ================= -->
+
+    <div class="section">
+
+        <h2 class="section-title">
+            Contact Information
+        </h2>
+
+
+        <div class="row">
+
+
+            <div class="field">
+
+                <label>
+                    Phone Number
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="Enter 10-digit number"
+                    maxlength="10"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Email Address
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter email address"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field full">
+
+                <label>
+                    Address
+                    <span class="required">*</span>
+                </label>
+
+                <textarea
+                    id="address"
+                    placeholder="Enter complete address"
+                    required
+                ></textarea>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= MEDICAL INFORMATION ================= -->
+
+    <div class="section">
+
+        <h2 class="section-title">
+            Medical Information
+        </h2>
+
+
+        <div class="row">
+
+
+            <div class="field">
+
+                <label>
+                    Diabetes Status
+                    <span class="required">*</span>
+                </label>
+
+
+                <select
+                    id="diabetesType"
+                    onchange="handleDiabetesChange()"
+                    required
+                >
+
+                    <option value="">
+                        Select Diabetes Status
+                    </option>
+
+                    <option value="Null">
+                        Null
+                    </option>
+
+                    <option value="No Diabetes">
+                        No Diabetes
+                    </option>
+
+                    <option value="Type 1 Diabetes">
+                        Type 1 Diabetes
+                    </option>
+
+                    <option value="Type 2 Diabetes">
+                        Type 2 Diabetes
+                    </option>
+
+                    <option value="Gestational Diabetes">
+                        Gestational Diabetes
+                    </option>
+
+                    <option value="Prediabetes">
+                        Prediabetes
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Emergency Contact
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="tel"
+                    id="emergencyContact"
+                    placeholder="Emergency contact"
+                    maxlength="10"
+                    required
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <!-- NULL -->
+
+        <div
+            id="nullNote"
+            class="medical-note null-note"
+        >
+
+            <strong>
+                ℹ️ Medical Information Not Specified
+            </strong>
+
+            <br>
+
+            Diabetes information has not been
+            specified for this patient.
+
+        </div>
+
+
+        <!-- NO DIABETES -->
+
+        <div
+            id="nonDiabetesNote"
+            class="medical-note non-diabetes-note"
+        >
+
+            <strong>
+                ✅ Non-Diabetic Patient
+            </strong>
+
+            <br>
+
+            This patient can use regular medication
+            tracking, appointments and hospital
+            reporting.
+
+            <br>
+
+            Insulin tracking will not be required
+            for this patient.
+
+        </div>
+
+
+        <!-- DIABETES -->
+
+        <div
+            id="diabetesNote"
+            class="medical-note diabetes-note"
+        >
+
+            <strong>
+                💉 Diabetes Patient
+            </strong>
+
+            <br>
+
+            This patient can use medication and
+            insulin tracking.
+
+            <br>
+
+            The nurse can enter the prescribed
+            insulin dosage through the Nurse
+            Dosage Module.
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================= LOGIN INFORMATION ================= -->
+
+    <div class="section">
+
+        <h2 class="section-title">
+            Login Information
+        </h2>
+
+
+        <div class="row">
+
+
+            <div class="field">
+
+                <label>
+                    Password
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Create password"
+                    required
+                >
+
+                <div class="password-note">
+
+                    Password should contain at least
+                    6 characters.
+
+                </div>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Confirm Password
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm password"
+                    required
+                >
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= BUTTONS ================= -->
+
+    <div class="button-area">
+
+        <button
+            type="button"
+            class="register-btn"
+            onclick="registerPatient()"
+        >
+
+            Register Patient
+
+        </button>
+
+
+        <button
+            type="button"
+            class="reset-btn"
+            onclick="resetForm()"
+        >
+
+            Reset
+
+        </button>
+
+    </div>
+
+
+    <!-- ================= MESSAGE ================= -->
+
+    <div
+        id="message"
+        class="message"
+    ></div>
+
+
+    <!-- ================= GENERATED PATIENT ID ================= -->
+
+    <div
+        id="patientIdBox"
+        class="patient-id-box"
+    >
+
+        <h3>
+            Your Hospital Unique Patient ID
+        </h3>
+
+
+        <div
+            id="generatedPatientId"
+            class="patient-id"
+        ></div>
+
+
+        <p style="margin-top:12px;">
+            Please remember this ID for login.
+        </p>
+
+    </div>
+
+
+    <!-- ================= LOGIN ================= -->
+
+    <div class="login-link">
+
+        Already registered?
+
+        <a href="index.html">
+            Login here
+        </a>
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+// =====================================================
+// DIABETES STATUS
+// =====================================================
+
+function handleDiabetesChange() {
+
+    const diabetesType =
+        document.getElementById(
+            "diabetesType"
+        ).value;
+
+
+    const nullNote =
+        document.getElementById(
+            "nullNote"
+        );
+
+
+    const nonDiabetesNote =
+        document.getElementById(
+            "nonDiabetesNote"
+        );
+
+
+    const diabetesNote =
+        document.getElementById(
+            "diabetesNote"
+        );
+
+
+    // Hide all notes
+
+    nullNote.classList.remove("show");
+
+    nonDiabetesNote.classList.remove("show");
+
+    diabetesNote.classList.remove("show");
+
+
+    // NULL
+
+    if (diabetesType === "Null") {
+
+        nullNote.classList.add("show");
+
+    }
+
+
+    // NO DIABETES
+
+    else if (diabetesType === "No Diabetes") {
+
+        nonDiabetesNote.classList.add("show");
+
+    }
+
+
+    // DIABETES
+
+    else if (diabetesType !== "") {
+
+        diabetesNote.classList.add("show");
+
+    }
+
+}
+
+
+
+// =====================================================
+// GENERATE UNIQUE PATIENT ID
+// =====================================================
+
+function generatePatientId() {
+
+    const year =
+        new Date().getFullYear();
+
+
+    const randomNumber =
+        Math.floor(
+            10000 +
+            Math.random() * 90000
+        );
+
+
+    return (
+        "PAT" +
+        year +
+        randomNumber
+    );
+
+}
+
+
+
+// =====================================================
+// REGISTER PATIENT
+// =====================================================
+
+function registerPatient() {
+
+
+    // ================================================
+    // GET VALUES
+    // ================================================
+
+    const fullName =
+        document.getElementById(
+            "fullName"
+        ).value.trim();
+
+
+    const dob =
+        document.getElementById(
+            "dob"
+        ).value;
+
+
+    const gender =
+        document.getElementById(
+            "gender"
+        ).value;
+
+
+    const bloodGroup =
+        document.getElementById(
+            "bloodGroup"
+        ).value;
+
+
+    const phone =
+        document.getElementById(
+            "phone"
+        ).value.trim();
+
+
+    const email =
+        document.getElementById(
+            "email"
+        ).value.trim();
+
+
+    const address =
+        document.getElementById(
+            "address"
+        ).value.trim();
+
+
+    const diabetesType =
+        document.getElementById(
+            "diabetesType"
+        ).value;
+
+
+    const emergencyContact =
+        document.getElementById(
+            "emergencyContact"
+        ).value.trim();
+
+
+    const password =
+        document.getElementById(
+            "password"
+        ).value;
+
+
+    const confirmPassword =
+        document.getElementById(
+            "confirmPassword"
+        ).value;
+
+
+
+    // ================================================
+    // VALIDATION
+    // ================================================
+
+    if (!fullName) {
+
+        showMessage(
+            "Please enter the patient's full name.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!dob) {
+
+        showMessage(
+            "Please select the date of birth.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!gender) {
+
+        showMessage(
+            "Please select gender.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!bloodGroup) {
+
+        showMessage(
+            "Please select blood group.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!/^[0-9]{10}$/.test(phone)) {
+
+        showMessage(
+            "Please enter a valid 10-digit phone number.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!email) {
+
+        showMessage(
+            "Please enter email address.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!address) {
+
+        showMessage(
+            "Please enter complete address.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!diabetesType) {
+
+        showMessage(
+            "Please select the diabetes status.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!/^[0-9]{10}$/.test(emergencyContact)) {
+
+        showMessage(
+            "Please enter a valid 10-digit emergency contact number.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (password.length < 6) {
+
+        showMessage(
+            "Password must contain at least 6 characters.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (password !== confirmPassword) {
+
+        showMessage(
+            "Passwords do not match.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+
+    // ================================================
+    // GET EXISTING PATIENTS
+    // ================================================
+
+    let patients =
+        JSON.parse(
+            localStorage.getItem(
+                "registeredPatients"
+            ) || "[]"
+        );
+
+
+    // ================================================
+    // CHECK DUPLICATE EMAIL
+    // ================================================
+
+    const existingPatient =
+        patients.find(
+            patient =>
+                patient.email &&
+                patient.email.toLowerCase() ===
+                email.toLowerCase()
+        );
+
+
+    if (existingPatient) {
+
+        showMessage(
+            "This email is already registered. Please login.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+
+    // ================================================
+    // GENERATE UNIQUE PATIENT ID
+    // ================================================
+
+    let patientId =
+        generatePatientId();
+
+
+    while (
+        patients.some(
+            patient =>
+                patient.patientId === patientId
+        )
+    ) {
+
+        patientId =
+            generatePatientId();
+
+    }
+
+
+
+    // ================================================
+    // CREATE PATIENT OBJECT
+    // ================================================
+
+    const patient = {
+
+        patientId: patientId,
+
+        fullName: fullName,
+
+        dob: dob,
+
+        gender: gender,
+
+        bloodGroup: bloodGroup,
+
+        phone: phone,
+
+        email: email,
+
+        address: address,
+
+        diabetesType: diabetesType,
+
+        emergencyContact: emergencyContact,
+
+        password: password,
+
+        registeredAt:
+            new Date().toISOString()
+
+    };
+
+
+
+    // ================================================
+    // SAVE PATIENT
+    // ================================================
+
+    patients.push(patient);
+
+
+    localStorage.setItem(
+        "registeredPatients",
+        JSON.stringify(patients)
+    );
+
+
+
+    // =================================================
+    // IMPORTANT FIX
+    // SAVE THIS NEW PATIENT AS CURRENT PATIENT
+    // =================================================
+
+    localStorage.setItem(
+        "currentPatient",
+        JSON.stringify(patient)
+    );
+
+
+    // =================================================
+    // SET CURRENT LOGIN PATIENT ID
+    // =================================================
+
+    localStorage.setItem(
+        "loggedInPatientId",
+        patient.patientId
+    );
+
+
+    localStorage.setItem(
+        "patientLoggedIn",
+        "true"
+    );
+
+
+
+    // =================================================
+    // DISPLAY SUCCESS
+    // =================================================
+
+    showMessage(
+        "Patient registered successfully!",
+        "success"
+    );
+
+
+    document.getElementById(
+        "generatedPatientId"
+    ).textContent =
+        patient.patientId;
+
+
+    document.getElementById(
+        "patientIdBox"
+    ).classList.add("show");
+
+
+
+    // =================================================
+    // DISABLE REGISTER BUTTON
+    // =================================================
+
+    const registerButton =
+        document.querySelector(
+            ".register-btn"
+        );
+
+
+    registerButton.disabled = true;
+
+    registerButton.style.opacity = "0.6";
+
+    registerButton.textContent =
+        "Registered Successfully";
+
+
+
+    // =================================================
+    // REDIRECT TO PROFILE
+    // =================================================
+
+    setTimeout(
+        function() {
+
+            window.location.href =
+                "profile.html";
+
+        },
+        4000
+    );
+
+}
+
+
+
+// =====================================================
+// SHOW MESSAGE
+// =====================================================
+
+function showMessage(
+    text,
+    type
+) {
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.textContent =
+        text;
+
+
+    message.className =
+        "message " + type;
+
+
+    message.style.display =
+        "block";
+
+}
+
+
+
+// =====================================================
+// RESET FORM
+// =====================================================
+
+function resetForm() {
+
+    document
+        .querySelectorAll(
+            "input, select, textarea"
+        )
+        .forEach(
+            element => {
+
+                element.value = "";
+
+            }
+        );
+
+
+    document.getElementById(
+        "nullNote"
+    ).classList.remove("show");
+
+
+    document.getElementById(
+        "nonDiabetesNote"
+    ).classList.remove("show");
+
+
+    document.getElementById(
+        "diabetesNote"
+    ).classList.remove("show");
+
+
+    document.getElementById(
+        "message"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "patientIdBox"
+    ).classList.remove("show");
+
+
+    const button =
+        document.querySelector(
+            ".register-btn"
+        );
+
+
+    button.disabled = false;
+
+    button.style.opacity = "1";
+
+    button.textContent =
+        "Register Patient";
+
+}
+
+</script>
+
+
+</body>
+
+</html>

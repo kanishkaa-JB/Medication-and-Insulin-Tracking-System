@@ -1,0 +1,2310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Hospital & Doctor Reporting</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fa;
+            color: #222;
+        }
+
+        header {
+            background: #1565c0;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+            font-size: 32px;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .container {
+            width: 94%;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            margin-bottom: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #222;
+        }
+
+        h3 {
+            color: #1565c0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .patient-id {
+            color: #1565c0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .patient-item {
+            background: #f5f9ff;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .patient-item strong {
+            display: block;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .period-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        button {
+            border: none;
+            padding: 13px 22px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .generate-btn {
+            background: #1565c0;
+            color: white;
+            width: 100%;
+            font-size: 17px;
+            padding: 16px;
+        }
+
+        .print-btn {
+            background: #455a64;
+            color: white;
+        }
+
+        .download-btn {
+            background: #2e7d32;
+            color: white;
+        }
+
+        .send-btn {
+            background: #6a1b9a;
+            color: white;
+        }
+
+        .back-btn {
+            background: #757575;
+            color: white;
+        }
+
+        .logout-btn {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .summary-card {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            background: #e3f2fd;
+        }
+
+        .summary-card h3 {
+            margin: 0 0 10px;
+            font-size: 30px;
+        }
+
+        .summary-card p {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            min-width: 750px;
+        }
+
+        th {
+            background: #1565c0;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 11px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fbff;
+        }
+
+        .insulin-table th {
+            background: #e65100;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+        }
+
+        .status {
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            background: #eef5ff;
+            line-height: 1.5;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .warning {
+            background: #fff8e1;
+            color: #8d6e00;
+        }
+
+        .report-preview {
+            border: 1px solid #ddd;
+            padding: 30px;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .report-header {
+            text-align: center;
+            border-bottom: 2px solid #222;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .report-header h1 {
+            margin: 0;
+        }
+
+        .report-header p {
+            margin: 6px 0;
+        }
+
+        .report-section {
+            margin-top: 25px;
+        }
+
+        .doctor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .navigation {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .navigation a {
+            color: #1565c0;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 20px;
+            line-height: 2;
+        }
+
+        .secure-note {
+            background: #fff8e1;
+            border-left: 5px solid #ffb300;
+            padding: 15px;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 700px) {
+
+            .patient-grid,
+            .period-grid,
+            .doctor-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+        @media print {
+
+            body {
+                background: white;
+            }
+
+            header,
+            .no-print,
+            .navigation,
+            .actions,
+            #reportControls {
+                display: none !important;
+            }
+
+            .container {
+                width: 100%;
+                max-width: none;
+                margin: 0;
+            }
+
+            .box {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .report-preview {
+                border: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>🏥 Hospital & Doctor Reporting</h1>
+
+    <p>
+        Monthly Medication & Insulin Report
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+    <!-- =================================================
+         PATIENT INFORMATION
+    ================================================== -->
+
+    <div class="box">
+
+        <h2>👤 Patient Information</h2>
+
+        <div class="patient-grid">
+
+            <div class="patient-item">
+
+                <strong>
+                    Patient ID
+                </strong>
+
+                <span
+                    id="patientId"
+                    class="patient-id">
+                </span>
+
+            </div>
+
+
+            <div class="patient-item">
+
+                <strong>
+                    Full Name
+                </strong>
+
+                <span id="patientName">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="patient-item">
+
+                <strong>
+                    Date of Birth
+                </strong>
+
+                <span id="patientDob">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="patient-item">
+
+                <strong>
+                    Gender
+                </strong>
+
+                <span id="patientGender">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="patient-item">
+
+                <strong>
+                    Blood Group
+                </strong>
+
+                <span id="patientBlood">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="patient-item">
+
+                <strong>
+                    Diabetes Status
+                </strong>
+
+                <span id="patientDiabetes">
+                    -
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         REPORT PERIOD
+    ================================================== -->
+
+    <div
+        class="box"
+        id="reportControls">
+
+        <h2>📅 Report Period</h2>
+
+        <p>
+            Select the month for which the medication
+            and insulin history should be compiled.
+        </p>
+
+
+        <div class="period-grid">
+
+            <div>
+
+                <label>
+                    Month
+                </label>
+
+                <select id="reportMonth">
+
+                    <option value="0">
+                        January
+                    </option>
+
+                    <option value="1">
+                        February
+                    </option>
+
+                    <option value="2">
+                        March
+                    </option>
+
+                    <option value="3">
+                        April
+                    </option>
+
+                    <option value="4">
+                        May
+                    </option>
+
+                    <option value="5">
+                        June
+                    </option>
+
+                    <option value="6">
+                        July
+                    </option>
+
+                    <option value="7">
+                        August
+                    </option>
+
+                    <option value="8">
+                        September
+                    </option>
+
+                    <option value="9">
+                        October
+                    </option>
+
+                    <option value="10">
+                        November
+                    </option>
+
+                    <option value="11">
+                        December
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>
+                    Year
+                </label>
+
+                <select id="reportYear">
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="generate-btn"
+            id="generateButton">
+
+            📄 Generate Monthly Report
+
+        </button>
+
+
+        <div
+            id="status"
+            class="status">
+
+            Select a month and generate the report.
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         REPORT
+    ================================================== -->
+
+    <div
+        id="reportArea"
+        class="hidden">
+
+
+        <!-- =============================================
+             SUMMARY
+        ============================================== -->
+
+        <div class="box">
+
+            <h2>📊 Monthly Summary</h2>
+
+            <div class="summary-grid">
+
+                <div class="summary-card">
+
+                    <h3 id="medicineCount">
+                        0
+                    </h3>
+
+                    <p>
+                        Medicine Records
+                    </p>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <h3 id="insulinCount">
+                        0
+                    </h3>
+
+                    <p>
+                        Insulin Records
+                    </p>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <h3 id="totalRecords">
+                        0
+                    </h3>
+
+                    <p>
+                        Total Records
+                    </p>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <h3 id="glucoseCount">
+                        0
+                    </h3>
+
+                    <p>
+                        Glucose Readings
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =============================================
+             REPORT PREVIEW
+        ============================================== -->
+
+        <div class="box">
+
+            <div
+                id="reportPreview"
+                class="report-preview">
+
+                <!-- Generated report appears here -->
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =============================================
+             DOCTOR INFORMATION
+        ============================================== -->
+
+        <div class="box">
+
+            <h2>👨‍⚕️ Hospital / Doctor Information</h2>
+
+            <div class="doctor-grid">
+
+                <div>
+
+                    <label>
+                        Hospital Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="hospitalName"
+                        placeholder="Enter hospital name">
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Doctor Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="doctorName"
+                        placeholder="Enter doctor name">
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Department
+                    </label>
+
+                    <input
+                        type="text"
+                        id="department"
+                        placeholder="Example: Endocrinology">
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Report Status
+                    </label>
+
+                    <select id="reportStatus">
+
+                        <option value="Generated">
+                            Generated
+                        </option>
+
+                        <option value="Reviewed">
+                            Reviewed
+                        </option>
+
+                        <option value="Follow-up Required">
+                            Follow-up Required
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =============================================
+             DOCTOR NOTES
+        ============================================== -->
+
+        <div class="box">
+
+            <h2>📝 Doctor's Notes</h2>
+
+            <textarea
+                id="doctorNotes"
+                placeholder="Enter doctor's observations, recommendations or follow-up notes">
+            </textarea>
+
+        </div>
+
+
+
+        <!-- =============================================
+             ACTIONS
+        ============================================== -->
+
+        <div
+            class="box no-print">
+
+            <h2>📤 Report Actions</h2>
+
+            <div class="actions">
+
+                <button
+                    type="button"
+                    class="print-btn"
+                    id="printButton">
+
+                    🖨 Print / Save as PDF
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="download-btn"
+                    id="downloadButton">
+
+                    📥 Download Report
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="send-btn"
+                    id="sendButton">
+
+                    📤 Send Report
+
+                </button>
+
+            </div>
+
+
+            <div class="secure-note">
+
+                🔐 <strong>Prototype security note:</strong>
+
+                The current project uses localStorage and
+                therefore is not suitable for real medical
+                data transmission. The Send Report function
+                should later be connected to an authenticated
+                HTTPS hospital/doctor API when the database
+                and secure backend are implemented.
+
+            </div>
+
+
+            <div
+                id="sendStatus"
+                class="status hidden">
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         NAVIGATION
+    ================================================== -->
+
+    <div class="navigation no-print">
+
+        <a href="./profile.html">
+            👤 Profile
+        </a>
+
+        <a href="./nurse.html">
+            👩‍⚕️ Nurse Dosage
+        </a>
+
+        <a href="./reminder.html">
+            🔔 Reminders
+        </a>
+
+        <a href="./appointment.html">
+            📅 Appointments
+        </a>
+
+    </div>
+
+
+    <button
+        type="button"
+        class="logout-btn no-print"
+        id="logoutButton">
+
+        Logout
+
+    </button>
+
+
+</div>
+
+
+
+<script>
+
+
+// =====================================================
+// PATIENT LOGIN
+// =====================================================
+
+const patientId =
+    localStorage.getItem(
+        "loggedInPatientId"
+    );
+
+
+if (!patientId) {
+
+    alert(
+        "Please login first."
+    );
+
+    window.location.href =
+        "./index.html";
+
+}
+
+
+document.getElementById(
+    "patientId"
+).textContent =
+    patientId;
+
+
+
+// =====================================================
+// PATIENT INFORMATION
+// =====================================================
+
+function loadPatientInformation() {
+
+    let patient = null;
+
+
+    // First try currentPatient
+
+    const currentPatient =
+        localStorage.getItem(
+            "currentPatient"
+        );
+
+
+    if (currentPatient) {
+
+        try {
+
+            patient =
+                JSON.parse(
+                    currentPatient
+                );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Could not read current patient."
+            );
+
+        }
+
+    }
+
+
+    // If not available, search registered patients
+
+    if (!patient) {
+
+        const registered =
+            JSON.parse(
+                localStorage.getItem(
+                    "registeredPatients"
+                ) || "[]"
+            );
+
+
+        patient =
+            registered.find(
+                item => {
+
+                    return (
+                        String(
+                            item.patientId ||
+                            ""
+                        )
+                            .trim()
+                            .toUpperCase()
+                        ===
+                        String(
+                            patientId
+                        )
+                            .trim()
+                            .toUpperCase()
+                    );
+
+                }
+            );
+
+    }
+
+
+    if (!patient) {
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "patientName"
+    ).textContent =
+        patient.fullName ||
+        "-";
+
+
+    document.getElementById(
+        "patientDob"
+    ).textContent =
+        patient.dob ||
+        "-";
+
+
+    document.getElementById(
+        "patientGender"
+    ).textContent =
+        patient.gender ||
+        "-";
+
+
+    document.getElementById(
+        "patientBlood"
+    ).textContent =
+        patient.bloodGroup ||
+        "-";
+
+
+    document.getElementById(
+        "patientDiabetes"
+    ).textContent =
+        patient.diabetesType ||
+        "Null";
+
+}
+
+
+loadPatientInformation();
+
+
+
+// =====================================================
+// YEAR DROPDOWN
+// =====================================================
+
+const yearSelect =
+    document.getElementById(
+        "reportYear"
+    );
+
+
+const currentYear =
+    new Date().getFullYear();
+
+
+for (
+    let year = currentYear;
+    year >= currentYear - 5;
+    year--
+) {
+
+    const option =
+        document.createElement(
+            "option"
+        );
+
+
+    option.value =
+        year;
+
+
+    option.textContent =
+        year;
+
+
+    yearSelect.appendChild(
+        option
+    );
+
+}
+
+
+yearSelect.value =
+    currentYear;
+
+
+
+// =====================================================
+// DEFAULT MONTH
+// =====================================================
+
+document.getElementById(
+    "reportMonth"
+).value =
+    new Date().getMonth();
+
+
+
+// =====================================================
+// GET DOSAGE RECORDS
+// =====================================================
+
+function getPatientRecords() {
+
+    const allRecords =
+        JSON.parse(
+            localStorage.getItem(
+                "dosageRecords"
+            ) || "[]"
+        );
+
+
+    return allRecords.filter(
+        record => {
+
+            return (
+                String(
+                    record.patientId ||
+                    ""
+                )
+                    .trim()
+                    .toUpperCase()
+                ===
+                String(
+                    patientId
+                )
+                    .trim()
+                    .toUpperCase()
+            );
+
+        }
+    );
+
+}
+
+
+
+// =====================================================
+// CHECK RECORD DATE
+// =====================================================
+
+function getRecordDate(record) {
+
+    if (
+        record.createdAt
+    ) {
+
+        const date =
+            new Date(
+                record.createdAt
+            );
+
+
+        if (
+            !isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return date;
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+
+// =====================================================
+// FILTER MONTH
+// =====================================================
+
+function getMonthlyRecords(
+    records,
+    month,
+    year
+) {
+
+    return records.filter(
+        record => {
+
+            const date =
+                getRecordDate(
+                    record
+                );
+
+
+            if (!date) {
+
+                return false;
+
+            }
+
+
+            return (
+
+                date.getMonth() ===
+                month
+
+                &&
+
+                date.getFullYear() ===
+                year
+
+            );
+
+        }
+    );
+
+}
+
+
+
+// =====================================================
+// FORMAT DATE
+// =====================================================
+
+function formatDate(
+    date
+) {
+
+    if (!date) {
+
+        return "-";
+
+    }
+
+
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+
+// =====================================================
+// ESCAPE HTML
+// =====================================================
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+
+// =====================================================
+// GENERATE REPORT
+// =====================================================
+
+function generateReport() {
+
+    const month =
+        Number(
+            document.getElementById(
+                "reportMonth"
+            ).value
+        );
+
+
+    const year =
+        Number(
+            document.getElementById(
+                "reportYear"
+            ).value
+        );
+
+
+    const monthName =
+        new Date(
+            year,
+            month,
+            1
+        ).toLocaleString(
+            "en-US",
+            {
+                month: "long"
+            }
+        );
+
+
+    const allRecords =
+        getPatientRecords();
+
+
+    const records =
+        getMonthlyRecords(
+            allRecords,
+            month,
+            year
+        );
+
+
+    const medicineRecords =
+        records.filter(
+            record =>
+                String(
+                    record.type ||
+                    ""
+                )
+                    .toLowerCase()
+                ===
+                "medicine"
+        );
+
+
+    const insulinRecords =
+        records.filter(
+            record =>
+                String(
+                    record.type ||
+                    ""
+                )
+                    .toLowerCase()
+                ===
+                "insulin"
+        );
+
+
+    const glucoseRecords =
+        insulinRecords.filter(
+            record =>
+                record.glucoseReading !==
+                undefined &&
+                record.glucoseReading !==
+                null &&
+                record.glucoseReading !==
+                ""
+        );
+
+
+    // ---------------------------------------------
+    // SUMMARY
+    // ---------------------------------------------
+
+    document.getElementById(
+        "medicineCount"
+    ).textContent =
+        medicineRecords.length;
+
+
+    document.getElementById(
+        "insulinCount"
+    ).textContent =
+        insulinRecords.length;
+
+
+    document.getElementById(
+        "totalRecords"
+    ).textContent =
+        records.length;
+
+
+    document.getElementById(
+        "glucoseCount"
+    ).textContent =
+        glucoseRecords.length;
+
+
+    // ---------------------------------------------
+    // MEDICINE TABLE
+    // ---------------------------------------------
+
+    let medicineRows = "";
+
+
+    medicineRecords.forEach(
+        record => {
+
+            const date =
+                getRecordDate(
+                    record
+                );
+
+
+            medicineRows += `
+
+                <tr>
+
+                    <td>
+                        ${formatDate(date)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.medicineName ||
+                            record.name ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.medicineType ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.dose ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.time ||
+                            record.medicationTime ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.frequency ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.foodRelation ||
+                            "-"
+                        )}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    if (
+        !medicineRows
+    ) {
+
+        medicineRows = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    style="text-align:center;">
+
+                    No medicine records found
+                    for this month.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    // ---------------------------------------------
+    // INSULIN TABLE
+    // ---------------------------------------------
+
+    let insulinRows = "";
+
+
+    insulinRecords.forEach(
+        record => {
+
+            const date =
+                getRecordDate(
+                    record
+                );
+
+
+            insulinRows += `
+
+                <tr>
+
+                    <td>
+                        ${formatDate(date)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.insulinType ||
+                            record.name ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.prescribedDose ||
+                            record.dose ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.administrationTime ||
+                            record.time ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.glucoseReading ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.glucoseUnit ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.injectionSite ||
+                            "-"
+                        )}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    if (
+        !insulinRows
+    ) {
+
+        insulinRows = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    style="text-align:center;">
+
+                    No insulin records found
+                    for this month.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    // ---------------------------------------------
+    // REPORT HTML
+    // ---------------------------------------------
+
+    const reportHTML = `
+
+        <div class="report-header">
+
+            <h1>
+                MONTHLY MEDICATION & INSULIN REPORT
+            </h1>
+
+            <p>
+                Hospital / Physician Report
+            </p>
+
+            <p>
+                Reporting Period:
+                <strong>
+                    ${monthName} ${year}
+                </strong>
+            </p>
+
+            <p>
+                Generated On:
+                ${formatDate(new Date())}
+            </p>
+
+        </div>
+
+
+        <div class="report-section">
+
+            <h3>
+                1. Patient Information
+            </h3>
+
+            <table>
+
+                <tr>
+
+                    <td>
+                        <strong>Patient ID</strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            patientId
+                        )}
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Patient Name</strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            document.getElementById(
+                                "patientName"
+                            ).textContent
+                        )}
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Date of Birth</strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            document.getElementById(
+                                "patientDob"
+                            ).textContent
+                        )}
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Gender</strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            document.getElementById(
+                                "patientGender"
+                            ).textContent
+                        )}
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Blood Group</strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            document.getElementById(
+                                "patientBlood"
+                            ).textContent
+                        )}
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Diabetes Status</strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            document.getElementById(
+                                "patientDiabetes"
+                            ).textContent
+                        )}
+                    </td>
+
+                </tr>
+
+            </table>
+
+        </div>
+
+
+        <div class="report-section">
+
+            <h3>
+                2. Medication History
+            </h3>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Date</th>
+
+                            <th>Medicine</th>
+
+                            <th>Type</th>
+
+                            <th>Dose</th>
+
+                            <th>Time</th>
+
+                            <th>Frequency</th>
+
+                            <th>Food Relation</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${medicineRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div class="report-section">
+
+            <h3>
+                3. Insulin History
+            </h3>
+
+            <div class="table-container">
+
+                <table class="insulin-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Date</th>
+
+                            <th>Insulin Type</th>
+
+                            <th>Dose</th>
+
+                            <th>Time</th>
+
+                            <th>Glucose</th>
+
+                            <th>Unit</th>
+
+                            <th>Injection Site</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${insulinRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div class="report-section">
+
+            <h3>
+                4. Monthly Summary
+            </h3>
+
+            <table>
+
+                <tr>
+
+                    <td>
+                        Total Medicine Records
+                    </td>
+
+                    <td>
+                        ${medicineRecords.length}
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        Total Insulin Records
+                    </td>
+
+                    <td>
+                        ${insulinRecords.length}
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        Total Dosage Records
+                    </td>
+
+                    <td>
+                        ${records.length}
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        Blood Glucose Readings
+                    </td>
+
+                    <td>
+                        ${glucoseRecords.length}
+                    </td>
+
+                </tr>
+
+            </table>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "reportPreview"
+    ).innerHTML =
+        reportHTML;
+
+
+    document.getElementById(
+        "reportArea"
+    ).classList.remove(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "status"
+    ).textContent =
+        `✅ ${monthName} ${year} report generated successfully.`;
+
+    document.getElementById(
+        "status"
+    ).className =
+        "status success";
+
+
+    // Save currently generated report
+
+    window.currentReport = {
+
+        patientId:
+            patientId,
+
+        patientName:
+            document.getElementById(
+                "patientName"
+            ).textContent,
+
+        reportingMonth:
+            monthName,
+
+        reportingYear:
+            year,
+
+        medicineRecords:
+            medicineRecords,
+
+        insulinRecords:
+            insulinRecords,
+
+        totalRecords:
+            records.length,
+
+        generatedAt:
+            new Date().toISOString()
+
+    };
+
+}
+
+
+
+// =====================================================
+// PRINT
+// =====================================================
+
+function printReport() {
+
+    window.print();
+
+}
+
+
+
+// =====================================================
+// DOWNLOAD JSON REPORT
+// =====================================================
+
+function downloadReport() {
+
+    if (
+        !window.currentReport
+    ) {
+
+        alert(
+            "Please generate the report first."
+        );
+
+        return;
+
+    }
+
+
+    const hospital =
+        document.getElementById(
+            "hospitalName"
+        ).value;
+
+
+    const doctor =
+        document.getElementById(
+            "doctorName"
+        ).value;
+
+
+    const department =
+        document.getElementById(
+            "department"
+        ).value;
+
+
+    const status =
+        document.getElementById(
+            "reportStatus"
+        ).value;
+
+
+    const notes =
+        document.getElementById(
+            "doctorNotes"
+        ).value;
+
+
+    const finalReport = {
+
+        ...window.currentReport,
+
+        hospitalName:
+            hospital,
+
+        doctorName:
+            doctor,
+
+        department:
+            department,
+
+        reportStatus:
+            status,
+
+        doctorNotes:
+            notes
+
+    };
+
+
+    const json =
+        JSON.stringify(
+            finalReport,
+            null,
+            4
+        );
+
+
+    const blob =
+        new Blob(
+            [json],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        `Medical_Report_${patientId}_${window.currentReport.reportingMonth}_${window.currentReport.reportingYear}.json`;
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    document.body.removeChild(
+        link
+    );
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+}
+
+
+
+// =====================================================
+// SEND REPORT - PROTOTYPE
+// =====================================================
+
+async function sendReport() {
+
+    const sendStatus =
+        document.getElementById(
+            "sendStatus"
+        );
+
+
+    if (
+        !window.currentReport
+    ) {
+
+        sendStatus.className =
+            "status error";
+
+
+        sendStatus.textContent =
+            "❌ Generate the report before sending it.";
+
+        return;
+
+    }
+
+
+    const hospital =
+        document.getElementById(
+            "hospitalName"
+        ).value.trim();
+
+
+    const doctor =
+        document.getElementById(
+            "doctorName"
+        ).value.trim();
+
+
+    const department =
+        document.getElementById(
+            "department"
+        ).value.trim();
+
+
+    const status =
+        document.getElementById(
+            "reportStatus"
+        ).value;
+
+
+    const notes =
+        document.getElementById(
+            "doctorNotes"
+        ).value.trim();
+
+
+    if (
+        !hospital ||
+        !doctor
+    ) {
+
+        sendStatus.className =
+            "status error";
+
+
+        sendStatus.textContent =
+            "❌ Please enter hospital name and doctor name.";
+
+        return;
+
+    }
+
+
+    const finalReport = {
+
+        ...window.currentReport,
+
+        hospitalName:
+            hospital,
+
+        doctorName:
+            doctor,
+
+        department:
+            department,
+
+        reportStatus:
+            status,
+
+        doctorNotes:
+            notes,
+
+        transmittedAt:
+            new Date().toISOString()
+
+    };
+
+
+    /*
+       Current prototype:
+
+       The report is stored locally so that
+       the reporting workflow can be demonstrated.
+
+       Later this will be replaced with an authenticated
+       HTTPS hospital API.
+    */
+
+
+    const sentReports =
+        JSON.parse(
+            localStorage.getItem(
+                "sentMedicalReports"
+            ) || "[]"
+        );
+
+
+    sentReports.push(
+        finalReport
+    );
+
+
+    localStorage.setItem(
+        "sentMedicalReports",
+        JSON.stringify(
+            sentReports
+        )
+    );
+
+
+    sendStatus.className =
+        "status success";
+
+
+    sendStatus.textContent =
+        "✅ Report prepared and recorded successfully. Secure hospital API transmission can be connected when the backend/database is implemented.";
+
+}
+
+
+
+// =====================================================
+// BUTTON EVENTS
+// =====================================================
+
+document.getElementById(
+    "generateButton"
+).addEventListener(
+    "click",
+    generateReport
+);
+
+
+document.getElementById(
+    "printButton"
+).addEventListener(
+    "click",
+    printReport
+);
+
+
+document.getElementById(
+    "downloadButton"
+).addEventListener(
+    "click",
+    downloadReport
+);
+
+
+document.getElementById(
+    "sendButton"
+).addEventListener(
+    "click",
+    sendReport
+);
+
+
+
+// =====================================================
+// LOGOUT
+// =====================================================
+
+document.getElementById(
+    "logoutButton"
+).addEventListener(
+    "click",
+    function() {
+
+        localStorage.removeItem(
+            "loggedInPatientId"
+        );
+
+        localStorage.removeItem(
+            "patientLoggedIn"
+        );
+
+        localStorage.removeItem(
+            "currentPatient"
+        );
+
+        window.location.href =
+            "./index.html";
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

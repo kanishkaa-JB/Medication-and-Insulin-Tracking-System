@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Login</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    rgba(235,248,252,0.92),
+                    rgba(248,252,255,0.92)
+                ),
+                url("medical-bg.jpg");
+
+            background-size: cover;
+
+            background-position: center;
+
+            padding: 20px;
+        }
+
+        .login-box {
+
+            width: 100%;
+
+            max-width: 450px;
+
+            background: white;
+
+            padding: 40px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 10px 35px
+                rgba(0,0,0,0.15);
+        }
+
+        .logo {
+
+            width: 75px;
+
+            height: 75px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            background: #e0f7fa;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 38px;
+        }
+
+        h1 {
+
+            text-align: center;
+
+            color: #05637c;
+
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+
+            text-align: center;
+
+            color: #666;
+
+            margin-bottom: 25px;
+        }
+
+        .line {
+
+            height: 3px;
+
+            background: #d6edf2;
+
+            margin-bottom: 25px;
+        }
+
+        .field {
+
+            margin-bottom: 20px;
+        }
+
+        label {
+
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+        input {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border: 1px solid #bdd8df;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            outline: none;
+        }
+
+        input:focus {
+
+            border-color: #087c96;
+        }
+
+        .login-btn {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #087c96;
+
+            color: white;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+
+            background: #065f73;
+        }
+
+        .message {
+
+            display: none;
+
+            margin-top: 18px;
+
+            padding: 14px;
+
+            border-radius: 8px;
+
+            text-align: center;
+
+            font-weight: bold;
+        }
+
+        .success {
+
+            display: block;
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+        .error {
+
+            display: block;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+        .register {
+
+            text-align: center;
+
+            margin-top: 25px;
+
+            color: #555;
+        }
+
+        .register a {
+
+            color: #087c96;
+
+            font-weight: bold;
+
+            text-decoration: none;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="login-box">
+
+
+    <div class="logo">
+
+        🏥
+
+    </div>
+
+
+    <h1>
+
+        Patient Login
+
+    </h1>
+
+
+    <p class="subtitle">
+
+        Medication & Insulin Tracking System
+
+    </p>
+
+
+    <div class="line"></div>
+
+
+    <form id="loginForm">
+
+
+        <div class="field">
+
+            <label>
+
+                Hospital Unique Patient ID
+
+            </label>
+
+            <input
+
+                type="text"
+
+                id="patientId"
+
+                placeholder="Enter Patient ID"
+
+                required
+
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+
+                Password
+
+            </label>
+
+            <input
+
+                type="password"
+
+                id="password"
+
+                placeholder="Enter Password"
+
+                required
+
+            >
+
+        </div>
+
+
+        <button
+
+            type="submit"
+
+            class="login-btn"
+
+        >
+
+            Login
+
+        </button>
+
+
+    </form>
+
+
+    <div
+
+        id="message"
+
+        class="message"
+
+    ></div>
+
+
+    <div class="register">
+
+        Don't have an account?
+
+        <a href="./register.html">
+
+            Register Patient
+
+        </a>
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+document
+.getElementById("loginForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+
+    const patientId =
+
+        document
+        .getElementById("patientId")
+        .value
+        .trim()
+        .toUpperCase();
+
+
+    const password =
+
+        document
+        .getElementById("password")
+        .value;
+
+
+    if (patientId === "") {
+
+        showMessage(
+            "Please enter Patient ID.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (password === "") {
+
+        showMessage(
+            "Please enter password.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    // ==========================================
+    // GET REGISTERED PATIENTS
+    // ==========================================
+
+    const savedData =
+
+        localStorage.getItem(
+            "registeredPatients"
+        );
+
+
+    if (!savedData) {
+
+        showMessage(
+            "No patient is registered yet. Please register first.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    let patients;
+
+
+    try {
+
+        patients =
+            JSON.parse(savedData);
+
+    }
+
+    catch(error) {
+
+        showMessage(
+            "Registration data is corrupted. Please register again.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!Array.isArray(patients)) {
+
+        showMessage(
+            "No valid patient data found.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    // ==========================================
+    // FIND PATIENT
+    // ==========================================
+
+    const patient = patients.find(function(item) {
+
+        return (
+
+            String(item.patientId || "")
+            .trim()
+            .toUpperCase() === patientId
+
+        );
+
+    });
+
+
+    if (!patient) {
+
+        showMessage(
+            "Patient ID not found. Please check your ID.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    // ==========================================
+    // CHECK PASSWORD
+    // ==========================================
+
+    if (
+        String(patient.password) !==
+        String(password)
+    ) {
+
+        showMessage(
+            "Incorrect password.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    // ==========================================
+    // LOGIN SUCCESS
+    // ==========================================
+
+    localStorage.setItem(
+        "loggedInPatientId",
+        patient.patientId
+    );
+
+
+    localStorage.setItem(
+        "patientLoggedIn",
+        "true"
+    );
+
+
+    localStorage.setItem(
+        "currentPatient",
+        JSON.stringify(patient)
+    );
+
+
+    showMessage(
+        "Login successful! Opening profile...",
+        "success"
+    );
+
+
+    // ==========================================
+    // DIRECTLY OPEN PROFILE
+    // ==========================================
+
+    window.location.href = "./profile.html";
+
+});
+
+
+
+function showMessage(text, type) {
+
+    const message =
+        document.getElementById("message");
+
+
+    message.textContent = text;
+
+
+    message.className =
+        "message " + type;
+
+
+    message.style.display = "block";
+
+}
+
+</script>
+
+
+</body>
+
+</html>
